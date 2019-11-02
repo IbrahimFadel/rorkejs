@@ -1,0 +1,20 @@
+{
+	"name": "rorkejs",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"dependencies": {
+		"babel": "^6.23.0",
+		"babel-cli": "^6.26.0",
+		"nodemon": "^1.19.4",
+		"pixi.js": "^5.1.5",
+		"webpack": "^4.41.2"
+	},
+	"devDependencies": {
+		"webpack-cli": "^3.3.9"
+	},
+	"scripts": {
+		"build": "webpack",
+		"build:watch": "webpack --watch --progress"
+	}
+}
