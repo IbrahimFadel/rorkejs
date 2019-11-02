@@ -3,6 +3,8 @@ import * as PIXI from "pixi.js";
 import { RGB2HEX } from "./Helpers";
 import Sprite from "./Sprite";
 import Texture from "./Texture";
+import Group from "./Group";
+import Input from "./Input";
 
 export default class Rorke {
 	constructor(width, height, colour) {
@@ -11,8 +13,9 @@ export default class Rorke {
 		this.colour = colour || [0, 0, 0];
 		this.version = "1.0";
 		this.fps = 60;
+		this.input = new Input();
 
-		this.PIXI = {
+		this.pixi = {
 			app: this.createApp()
 		};
 
@@ -20,6 +23,8 @@ export default class Rorke {
 			texture: async (name, path) => {
 				const newTexture = new Texture(name, path, this);
 				await newTexture.load();
+				this.textures.push(newTexture);
+				return newTexture;
 			}
 		};
 
@@ -27,10 +32,20 @@ export default class Rorke {
 			sprite: async (x, y, textureName) => {
 				const newSprite = new Sprite(x, y, textureName, this);
 				await newSprite.add();
+				this.sprites.push(newSprite);
+				return newSprite;
+			},
+			group: async () => {
+				const newGroup = new Group(this);
+				await newGroup.add();
+				this.groups.push(newGroup);
+				return newGroup;
 			}
 		};
 
 		this.sprites = [];
+		this.groups = [];
+
 		this.textures = [];
 
 		this.printInfo();
@@ -79,13 +94,24 @@ export default class Rorke {
 		const TICK = 1000 / this.fps;
 		let time = 0;
 		let frame = 0;
-		this.PIXI.app.ticker.add(async dt => {
+		this.pixi.app.ticker.add(async dt => {
 			const timeNow = new Date().getTime();
 			const timeDiff = timeNow - time;
 			if (timeDiff < TICK) return;
 			if (frame === this.fps) frame = 0;
 			frame++;
 			time = timeNow;
+
+			for (let sprite of this.sprites) {
+				sprite.update(dt);
+			}
+
+			for (let group of this.groups) {
+				group.update();
+				for (let sprite of group.sprites) {
+					sprite.update(dt);
+				}
+			}
 
 			await update();
 		});

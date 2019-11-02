@@ -4,22 +4,21 @@ export default class Texture {
 	constructor(name, path, rorke) {
 		this.name = name;
 		this.path = path;
-		this.RORKE = {
+		this.rorke = {
 			textures: rorke.textures
 		};
-		this.PIXI = {
+		this.pixi = {
 			texture: undefined
 		};
 	}
 
 	async load() {
-		for (let texture of this.RORKE.textures) {
+		for (let texture of this.rorke.textures) {
 			if (texture.name === this.name) {
 				throw "Cannot load textures of the same name!";
 			}
 		}
 		const newTexture = PIXI.Texture.from(this.path);
-		this.PIXI.texture = newTexture;
-		this.RORKE.textures.push(this);
+		this.pixi.texture = newTexture;
 	}
 }
