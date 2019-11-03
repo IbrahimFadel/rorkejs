@@ -17,7 +17,7 @@ export default class Rorke {
 		this.input = new Input();
 
 		this.pixi = {
-			app: this.createApp()
+			app: this.createApp(),
 		};
 
 		this.load = {
@@ -29,10 +29,10 @@ export default class Rorke {
 			},
 			spritesheet: async (name, path, options) => {
 				const newSpritesheet = new Spritesheet(name, path, options, this);
-				await newSpritesheet.load();
-				this.spritesheets.push(newSpritesheet);
-				console.log(this.spritesheets);
-			}
+				await newSpritesheet.load(textures => {
+					this.spritesheets.push(newSpritesheet);
+				});
+			},
 		};
 
 		this.add = {
@@ -47,7 +47,7 @@ export default class Rorke {
 				await newGroup.add();
 				this.groups.push(newGroup);
 				return newGroup;
-			}
+			},
 		};
 
 		this.sprites = [];
@@ -55,6 +55,7 @@ export default class Rorke {
 
 		this.textures = [];
 		this.spritesheets = [];
+		this.spritesheetsLoaded = 0;
 
 		this.printInfo();
 	}
@@ -78,7 +79,7 @@ export default class Rorke {
 		const app = new PIXI.Application({
 			width: this.width,
 			height: this.height,
-			backgroundColor: hexColour
+			backgroundColor: hexColour,
 		});
 		document.body.appendChild(app.view);
 		return app;
@@ -90,7 +91,12 @@ export default class Rorke {
 
 	async runLoad() {
 		await load();
-		this.runCreate();
+		const test = setInterval(() => {
+			if (this.spritesheetsLoaded === this.spritesheets.length - 1) {
+				this.runCreate();
+				clearInterval(test);
+			}
+		}, 1);
 	}
 
 	async runCreate() {

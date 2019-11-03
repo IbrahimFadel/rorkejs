@@ -4,7 +4,8 @@ export default class Spritesheet {
 	constructor(name, path, options, rorke) {
 		this.rorke = {
 			textures: rorke.textures,
-			rorke: rorke
+			rorke: rorke,
+			spritesheetsLoaded: rorke.spritesheetsLoaded,
 		};
 
 		this.name = name;
@@ -19,7 +20,7 @@ export default class Spritesheet {
 		this.textures = [];
 	}
 
-	async load() {
+	async load(callback) {
 		if (Object.keys(this.options).length < 3)
 			throw "Specify tileW, tileH, and tiles when loading spritesheets";
 
@@ -29,19 +30,14 @@ export default class Spritesheet {
 			throw "Something went wrong loading a spritesheet. Make sure the path is correct";
 		};
 		spritesheetImage.onload = async () => {
-			await this.splitImages(spritesheetImage);
+			await this.splitImages(spritesheetImage, textures => {
+				this.textures = textures;
+				callback(textures);
+			});
 		};
-
-		//! THIS IS MESSY I HATE IT
-		//! PLEASE FIND A SOLUTION!!!!!!
-		const areTexturesLoaded = setInterval(() => {
-			if (this.textures.length > 0) {
-				clearInterval(areTexturesLoaded);
-			}
-		}, 1);
 	}
 
-	async splitImages(img) {
+	async splitImages(img, callback) {
 		let textures = [];
 		this.imageW = img.naturalWidth;
 		this.imageH = img.naturalHeight;
@@ -56,22 +52,33 @@ export default class Spritesheet {
 			}
 			const x1 = xCount * this.tileW;
 			const y1 = col * this.tileH;
-			const tile = await createImageBitmap(img, x1, y1, this.tileW, this.tileH);
-			const can = document.createElement("canvas");
-			can.width = tile.width;
-			can.height = tile.height;
-			const ctx = can.getContext("2d");
-			ctx.drawImage(tile, 0, 0);
-			can.toBlob(async blob => {
-				const url = URL.createObjectURL(blob);
-				const newTexture = new Texture(this.name + i, url, this.rorke.rorke);
+			const tile = new Image(),
+				can = document.createElement("canvas"),
+				ctx = can.getContext("2d");
+			can.width = this.tileW;
+			can.height = this.tileH;
+			tile.src = this.path;
+			tile.onload = async () => {
+				ctx.drawImage(
+					tile,
+					x1,
+					y1,
+					this.tileW,
+					this.tileH,
+					0,
+					0,
+					this.tileW,
+					this.tileH
+				);
+				const imgUrl = can.toDataURL();
+				const newTexture = new Texture(this.name + i, imgUrl, this.rorke.rorke);
 				await newTexture.load();
 				textures.push(newTexture);
-				this[this.name + i] = newTexture;
 				if (i === this.tiles - 1) {
-					await this.setTextures(textures);
+					this.rorke.spritesheetsLoaded++;
+					callback(textures);
 				}
-			});
+			};
 			xCount++;
 		}
 	}
