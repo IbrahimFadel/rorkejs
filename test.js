@@ -1,9 +1,19 @@
+//@ts-ignore
 const game = new Rorke(800, 600, [105, 50, 50]);
 
 game.start();
 
-function load() {
-	game.load.texture("spriteTexture", "assets/player.png");
+async function load() {
+	await game.load.texture("spriteTexture", "assets/player.png");
+	await game.load.spritesheet(
+		"playerSpritesheet",
+		"assets/walkingSpritesheet.png",
+		{
+			tileW: 64,
+			tileH: 64,
+			tiles: 36
+		}
+	);
 }
 
 let player;

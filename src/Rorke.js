@@ -5,6 +5,7 @@ import Sprite from "./Sprite";
 import Texture from "./Texture";
 import Group from "./Group";
 import Input from "./Input";
+import Spritesheet from "./Spritesheet";
 
 export default class Rorke {
 	constructor(width, height, colour) {
@@ -25,6 +26,12 @@ export default class Rorke {
 				await newTexture.load();
 				this.textures.push(newTexture);
 				return newTexture;
+			},
+			spritesheet: async (name, path, options) => {
+				const newSpritesheet = new Spritesheet(name, path, options, this);
+				await newSpritesheet.load();
+				this.spritesheets.push(newSpritesheet);
+				console.log(this.spritesheets);
 			}
 		};
 
@@ -47,6 +54,7 @@ export default class Rorke {
 		this.groups = [];
 
 		this.textures = [];
+		this.spritesheets = [];
 
 		this.printInfo();
 	}
