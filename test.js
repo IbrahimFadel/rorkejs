@@ -11,15 +11,16 @@ async function load() {
 		{
 			tileW: 64,
 			tileH: 64,
-			tiles: 36
+			tiles: 36,
 		}
 	);
 }
 
 let player;
 let mygroup;
+let playerAnimationsSprite;
 async function create() {
-	game.fps = 100;
+	// game.fps = 1;
 	player = await game.add.sprite(
 		game.width / 2,
 		game.height / 2,
@@ -32,7 +33,10 @@ async function create() {
 	}
 
 	await mygroup.remove(mygroup.sprites[4]);
+
+	playerAnimationsSprite = await game.add.sprite(50, 50, "playerSpritesheet");
 }
+
 function update() {
 	if (game.input.keyIsDown("w")) {
 		player.velocity.y = -100;
@@ -48,12 +52,4 @@ function update() {
 	} else {
 		player.velocity.x = 0;
 	}
-	// player.x += 1;
-	// player.angle += 0.1;
-	// mygroup.angle += 0.01;
-	// mygroup.x += 1;
-	// for (let child of mygroup.sprites) {
-	// child.x += 1;
-	// child.angle += 0.1;
-	// }
 }
