@@ -18,11 +18,15 @@ export default class Animation {
 		this.paused = false;
 	}
 
+	pause() {
+		this.paused = true;
+	}
+
 	setFrame(i) {
 		this.sprite.pixi.sprite.texture = this.frames[i].pixi.texture;
 	}
 
-	update() {
+	updateAnimation() {
 		this.interval++;
 		if (this.interval === this.speed) {
 			this.interval = 0;
@@ -35,5 +39,9 @@ export default class Animation {
 			this.setFrame(this.frame);
 			this.frame++;
 		}
+	}
+
+	update() {
+		this.setFrame(this.frame);
 	}
 }

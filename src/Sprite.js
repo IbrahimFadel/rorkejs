@@ -36,21 +36,6 @@ export default class Sprite {
 						throw "Can't load animations of same name!";
 					}
 				}
-				// const animationFrames = this.textures.map((texture, i) => {
-				// 	if (i === frames[i]) {
-				// 		console.log("hi");
-				// 		return texture;
-				// 	}
-				// 	// for (let index of frames) {
-				// 	// return i === index ? texture;
-				// 	// if (i === index) {
-				// 	// 	console.log("hi");
-				// 	// 	return texture;
-				// 	// }
-				// 	// }
-				// 	// return i === frames
-				// });
-				// console.log(animationFrames);
 				let animationFrames = [];
 				for (let i = 0; i < this.textures.length; i++) {
 					for (let index of frames) {
@@ -59,7 +44,6 @@ export default class Sprite {
 						}
 					}
 				}
-				console.log(animationFrames);
 				const newAnimation = new Animation(
 					name,
 					animationFrames,
@@ -77,7 +61,15 @@ export default class Sprite {
 				const animation = this.getAnimation(name);
 				animation.play();
 			},
-			pause: name => {},
+			pause: name => {
+				const animation = this.getAnimation(name);
+				animation.pause();
+			},
+			setFrame: (name, i) => {
+				const animation = this.getAnimation(name);
+				animation.frame = i;
+				animation.update();
+			},
 		};
 	}
 
@@ -164,7 +156,7 @@ export default class Sprite {
 		if (this.type === this.SPRITESHEET) {
 			for (let animation of this._animations) {
 				if (!animation.paused) {
-					animation.update();
+					animation.updateAnimation();
 				}
 			}
 		}

@@ -7,11 +7,15 @@
 		"pixi.js": "^5.1.5"
 	},
 	"devDependencies": {
+		"i": "^0.3.6",
+		"npm": "^6.12.1",
+		"uglify-js": "^3.6.7",
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.9"
 	},
 	"scripts": {
 		"build": "webpack",
-		"build:watch": "webpack --watch --progress"
+		"build:watch": "webpack --watch --progress && uglify-js --compress --mangle dist/bundle.min.js",
+		"uglify": "uglify-js --compress --mangle dist/bundle.min.js"
 	}
 }
