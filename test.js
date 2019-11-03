@@ -20,7 +20,7 @@ let player;
 let mygroup;
 let playerAnimationsSprite;
 async function create() {
-	// game.fps = 1;
+	game.fps = 10;
 	player = await game.add.sprite(
 		game.width / 2,
 		game.height / 2,
@@ -35,6 +35,12 @@ async function create() {
 	await mygroup.remove(mygroup.sprites[4]);
 
 	playerAnimationsSprite = await game.add.sprite(50, 50, "playerSpritesheet");
+	playerAnimationsSprite.animations.add("walkUp", [0, 1, 2, 3, 4, 5, 6, 7, 8], {
+		repeat: true,
+		speed: 1,
+	});
+	playerAnimationsSprite.animations.play("walkUp");
+	// playerAnimationsSprite.animations.remove("walkUp");
 }
 
 function update() {
