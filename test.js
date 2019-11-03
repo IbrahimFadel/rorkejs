@@ -16,12 +16,12 @@ async function load() {
 	);
 }
 
-let player;
+let test;
 let mygroup;
-let playerAnimationsSprite;
+let player;
 async function create() {
-	// game.fps = 1;
-	player = await game.add.sprite(
+	game.fps = 10;
+	test = await game.add.sprite(
 		game.width / 2,
 		game.height / 2,
 		"spriteTexture"
@@ -34,22 +34,46 @@ async function create() {
 
 	await mygroup.remove(mygroup.sprites[4]);
 
-	playerAnimationsSprite = await game.add.sprite(50, 50, "playerSpritesheet");
+	player = await game.add.sprite(50, 50, "playerSpritesheet");
+	player.animations.add("walkUp", [0, 1, 2, 3, 4, 5, 6, 7, 8], {
+		repeat: true,
+		speed: 1,
+	});
+	player.animations.add("walkDown", [18, 19, 20, 21, 22, 23, 24, 25, 26], {
+		repeat: true,
+		speed: 1
+	});
+	player.animations.add("walkLeft", [9, 10, 11, 12, 13, 14, 15, 16, 17], {
+		repeat: true,
+		speed: 1
+	});
+	player.animations.add("walkRight", [27, 28, 29, 30, 31, 32, 33, 34, 35], {
+		repeat: true,
+		speed: 1
+	});
 }
 
 function update() {
 	if (game.input.keyIsDown("w")) {
 		player.velocity.y = -100;
+		player.animations.play("walkUp");
 	} else if (game.input.keyIsDown("s")) {
+		player.animations.play("walkDown");
 		player.velocity.y = 100;
 	} else {
 		player.velocity.y = 0;
+		player.animations.pause("walkUp");
+		player.animations.pause("walkDown");
 	}
 	if (game.input.keyIsDown("a")) {
 		player.velocity.x = -100;
+		player.animations.play("walkLeft");
 	} else if (game.input.keyIsDown("d")) {
 		player.velocity.x = 100;
+		player.animations.play("walkRight");
 	} else {
+		player.animations.pause("walkLeft");
+		player.animations.pause("walkRight");
 		player.velocity.x = 0;
 	}
 }

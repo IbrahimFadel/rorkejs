@@ -31,12 +31,54 @@ export default class Sprite {
 		this._animations = [];
 		this.animations = {
 			add: (name, frames, options) => {
-				const newAnimation = new Animation(name, frames, options);
+				for (let animation of this._animations) {
+					if (animation.name === name) {
+						throw "Can't load animations of same name!";
+					}
+				}
+				let animationFrames = [];
+				for (let i = 0; i < this.textures.length; i++) {
+					for (let index of frames) {
+						if (i === index) {
+							animationFrames.push(this.textures[i]);
+						}
+					}
+				}
+				const newAnimation = new Animation(
+					name,
+					animationFrames,
+					options,
+					this
+				);
+				this._animations.push(newAnimation);
 			},
-			remove: name => {},
-			play: name => {},
-			pause: name => {},
+			remove: name => {
+				const animation = this.getAnimation(name);
+				const i = this._animations.indexOf(animation);
+				this._animations.splice(i, i + 1);
+			},
+			play: name => {
+				const animation = this.getAnimation(name);
+				animation.play();
+			},
+			pause: name => {
+				const animation = this.getAnimation(name);
+				animation.pause();
+			},
+			setFrame: (name, i) => {
+				const animation = this.getAnimation(name);
+				animation.frame = i;
+				animation.update();
+			},
 		};
+	}
+
+	getAnimation(name) {
+		for (let animation of this._animations) {
+			if (animation.name === name) {
+				return animation;
+			}
+		}
 	}
 
 	async add() {
@@ -111,6 +153,13 @@ export default class Sprite {
 	update(dt) {
 		this.updatePos(dt);
 		this.updateRot(dt);
+		if (this.type === this.SPRITESHEET) {
+			for (let animation of this._animations) {
+				if (!animation.paused) {
+					animation.updateAnimation();
+				}
+			}
+		}
 	}
 
 	kill() {
