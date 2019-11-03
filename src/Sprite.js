@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import Animation from "./Animation";
+import { toDegree } from "./Helpers";
 
 export default class Sprite {
 	constructor(x, y, textureName, rorke) {
@@ -58,6 +59,9 @@ export default class Sprite {
 				this._animations.splice(i, i + 1);
 			},
 			play: name => {
+				for (let animation of this._animations) {
+					animation.pause();
+				}
 				const animation = this.getAnimation(name);
 				animation.play();
 			},
@@ -147,7 +151,7 @@ export default class Sprite {
 	}
 
 	updateRot(dt) {
-		this.pixi.sprite.rotation = this.angle;
+		this.pixi.sprite.angle = this.angle;
 	}
 
 	update(dt) {
@@ -164,5 +168,11 @@ export default class Sprite {
 
 	kill() {
 		this.pixi.sprite.destroy();
+	}
+
+	rotateTo(target) {
+		const angle =
+			toDegree(Math.atan2(target.y - this.y, target.x - this.x)) + 90;
+		this.angle = angle;
 	}
 }

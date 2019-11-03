@@ -20,7 +20,7 @@ let test;
 let mygroup;
 let player;
 async function create() {
-	game.fps = 10;
+	// game.fps = 10;
 	test = await game.add.sprite(
 		game.width / 2,
 		game.height / 2,
@@ -32,28 +32,37 @@ async function create() {
 		await mygroup.create(game.width / 2, 40 * i + 40, "spriteTexture");
 	}
 
-	await mygroup.remove(mygroup.sprites[4]);
+	// await mygroup.remove(mygroup.sprites[4]);
 
 	player = await game.add.sprite(50, 50, "playerSpritesheet");
 	player.animations.add("walkUp", [0, 1, 2, 3, 4, 5, 6, 7, 8], {
 		repeat: true,
-		speed: 1,
+		speed: 5,
 	});
 	player.animations.add("walkDown", [18, 19, 20, 21, 22, 23, 24, 25, 26], {
 		repeat: true,
-		speed: 1
+		speed: 5,
 	});
 	player.animations.add("walkLeft", [9, 10, 11, 12, 13, 14, 15, 16, 17], {
 		repeat: true,
-		speed: 1
+		speed: 5,
 	});
 	player.animations.add("walkRight", [27, 28, 29, 30, 31, 32, 33, 34, 35], {
 		repeat: true,
-		speed: 1
+		speed: 5,
 	});
 }
 
 function update() {
+	handlePlayerMovement();
+
+	for (let child of mygroup.sprites) {
+		child.rotateTo(player);
+	}
+	// player.rotateTo(mygroup.sprites[0]);
+}
+
+function handlePlayerMovement() {
 	if (game.input.keyIsDown("w")) {
 		player.velocity.y = -100;
 		player.animations.play("walkUp");
