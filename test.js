@@ -35,6 +35,10 @@ async function create() {
 	game.graphics.border(0);
 
 	game.graphics.drawShape(300, 300, 100, 100, 50, 10, 100, 5);
+
+	game.graphics.moveTo(0, 0);
+	game.graphics.border(10, 0xff0000);
+	game.graphics.lineTo(50, 200);
 	mygroup = await game.add.group();
 	for (let i = 0; i < 10; i++) {
 		await mygroup.create(game.width / 2, 40 * i + 40, "spriteTexture");

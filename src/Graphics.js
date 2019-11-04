@@ -16,6 +16,8 @@ export default class Graphics {
 		this.RECT = 0;
 		this.ELLIPSE = 1;
 		this.SHAPE = 2;
+		this.LINE = 3;
+		this.MOVE = 4;
 	}
 
 	makeGraphic(type, options) {
@@ -40,6 +42,22 @@ export default class Graphics {
 		this.border.colour = colour || 0x000000;
 		this.border.alpha = alpha || 1;
 		this.border.position = position || 1;
+	}
+
+	lineTo(x, y) {
+		const options = {
+			x: x,
+			y: y,
+		};
+		return this.makeGraphic(this.LINE, options);
+	}
+
+	moveTo(x, y) {
+		const options = {
+			x: x,
+			y: y,
+		};
+		return this.makeGraphic(this.MOVE, options);
 	}
 
 	drawRect(x, y, width, height) {
@@ -79,9 +97,6 @@ export default class Graphics {
 
 			count++;
 		}
-
-		console.log(options);
-
 		return this.makeGraphic(this.SHAPE, options);
 	}
 }
