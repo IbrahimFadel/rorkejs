@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Sprite as PixiSprite } from "pixi.js";
 
 import Animation from "./Animation";
 import { toDegree } from "./Helpers";
@@ -151,7 +151,7 @@ export default class Sprite {
 
 	addSpriteWithTexture(spriteTexture) {
 		const pixiTexture = spriteTexture.pixi.texture;
-		const sprite = new PIXI.Sprite(pixiTexture);
+		const sprite = new PixiSprite(pixiTexture);
 		sprite.anchor.set(0.5);
 		sprite.x = this.x;
 		sprite.y = this.y;
@@ -163,7 +163,7 @@ export default class Sprite {
 		this.textures = spritesheet.textures;
 
 		const initialFrame = this.textures[0];
-		const sprite = new PIXI.Sprite(initialFrame.pixi.texture);
+		const sprite = new PixiSprite(initialFrame.pixi.texture);
 		sprite.anchor.set(0.5);
 		sprite.x = this.x;
 		sprite.y = this.y;

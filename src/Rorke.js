@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Application } from "pixi.js";
 
 import { RGB2HEX } from "./Helpers";
 import Sprite from "./Sprite";
@@ -6,6 +6,7 @@ import Texture from "./Texture";
 import Group from "./Group";
 import Input from "./Input";
 import Spritesheet from "./Spritesheet";
+import Graphics from "./Graphics";
 
 export default class Rorke {
 	constructor(width, height, colour) {
@@ -15,6 +16,7 @@ export default class Rorke {
 		this.version = "1.0";
 		this.fps = 60;
 		this.input = new Input();
+		this.graphics = new Graphics(this);
 
 		this.pixi = {
 			app: this.createApp(),
@@ -76,7 +78,7 @@ export default class Rorke {
 
 	createApp() {
 		const hexColour = RGB2HEX(this.colour[0], this.colour[1], this.colour[2]);
-		const app = new PIXI.Application({
+		const app = new Application({
 			width: this.width,
 			height: this.height,
 			backgroundColor: hexColour,

@@ -1,14 +1,14 @@
-import * as PIXI from "pixi.js";
+import { Texture as PixiTexture } from "pixi.js";
 
 export default class Texture {
 	constructor(name, path, rorke) {
 		this.name = name;
 		this.path = path;
 		this.rorke = {
-			textures: rorke.textures
+			textures: rorke.textures,
 		};
 		this.pixi = {
-			texture: undefined
+			texture: undefined,
 		};
 	}
 
@@ -18,7 +18,7 @@ export default class Texture {
 				throw "Cannot load textures of the same name!";
 			}
 		}
-		const newTexture = PIXI.Texture.from(this.path);
+		const newTexture = PixiTexture.from(this.path);
 		this.pixi.texture = newTexture;
 	}
 }
