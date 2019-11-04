@@ -1,6 +1,7 @@
-import * as PIXI from "pixi.js";
+import { Sprite as PixiSprite } from "pixi.js";
 
 import Animation from "./Animation";
+import { toDegree } from "./Helpers";
 
 export default class Sprite {
 	constructor(x, y, textureName, rorke) {
@@ -14,6 +15,10 @@ export default class Sprite {
 			sprite: undefined,
 		};
 
+		this.scale = {
+			x: 1,
+			y: 1,
+		};
 		this.x = x;
 		this.y = y;
 		this.textureName = textureName;
@@ -58,6 +63,9 @@ export default class Sprite {
 				this._animations.splice(i, i + 1);
 			},
 			play: name => {
+				for (let animation of this._animations) {
+					animation.pause();
+				}
 				const animation = this.getAnimation(name);
 				animation.play();
 			},
@@ -71,6 +79,30 @@ export default class Sprite {
 				animation.update();
 			},
 		};
+
+		this.set = {
+			scale: (x, y) => {
+				if (x === undefined) throw "Must give a value when setting scale";
+				if (y === undefined) {
+					this.scale.x = x;
+					this.scale.y = x;
+				} else {
+					this.scale.x = x;
+					this.scale.y = y;
+				}
+			},
+			texture: name => {
+				this.pixi.sprite.texture = this.getTexture(name).pixi.texture;
+			},
+		};
+	}
+
+	getTexture(name) {
+		for (let texture of this.rorke.textures) {
+			if (texture.name === name) {
+				return texture;
+			}
+		}
 	}
 
 	getAnimation(name) {
@@ -119,7 +151,7 @@ export default class Sprite {
 
 	addSpriteWithTexture(spriteTexture) {
 		const pixiTexture = spriteTexture.pixi.texture;
-		const sprite = new PIXI.Sprite(pixiTexture);
+		const sprite = new PixiSprite(pixiTexture);
 		sprite.anchor.set(0.5);
 		sprite.x = this.x;
 		sprite.y = this.y;
@@ -131,7 +163,7 @@ export default class Sprite {
 		this.textures = spritesheet.textures;
 
 		const initialFrame = this.textures[0];
-		const sprite = new PIXI.Sprite(initialFrame.pixi.texture);
+		const sprite = new PixiSprite(initialFrame.pixi.texture);
 		sprite.anchor.set(0.5);
 		sprite.x = this.x;
 		sprite.y = this.y;
@@ -147,10 +179,15 @@ export default class Sprite {
 	}
 
 	updateRot(dt) {
-		this.pixi.sprite.rotation = this.angle;
+		this.pixi.sprite.angle = this.angle;
+	}
+
+	updateScale() {
+		this.pixi.sprite.scale.set(this.scale.x, this.scale.y);
 	}
 
 	update(dt) {
+		this.updateScale();
 		this.updatePos(dt);
 		this.updateRot(dt);
 		if (this.type === this.SPRITESHEET) {
@@ -164,5 +201,43 @@ export default class Sprite {
 
 	kill() {
 		this.pixi.sprite.destroy();
+	}
+
+	rotateTo(target) {
+		const angle =
+			toDegree(Math.atan2(target.y - this.y, target.x - this.x)) + 90;
+		this.angle = angle;
+	}
+
+	moveTo(target, speed) {
+		if (this.dist(target) <= 1) {
+			this.velocity.x = 0;
+			this.velocity.y = 0;
+			return;
+		}
+		const followedSpriteX = target.x;
+		const followedSpriteY = target.y;
+		const followingSpriteX = this.x;
+		const followingSpriteY = this.y;
+		if (followedSpriteX > followingSpriteX) {
+			this.velocity.x = speed;
+		} else if (followedSpriteX < followingSpriteX) {
+			this.velocity.x = -speed;
+		} else {
+			target.velocity.x = 0;
+		}
+		if (followedSpriteY > followingSpriteY) {
+			this.velocity.y = speed;
+		} else if (followedSpriteY < followingSpriteY) {
+			this.velocity.y = -speed;
+		} else {
+			target.velocity.y = 0;
+		}
+	}
+
+	dist(target) {
+		return Math.sqrt(
+			Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)
+		);
 	}
 }

@@ -9,3 +9,7 @@ export function RGB2HEX(r, g, b) {
 
 	return "0x" + r + g + b;
 }
+
+export function toDegree(rad) {
+	return (rad * 180) / Math.PI;
+}

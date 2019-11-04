@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import { Container } from "pixi.js";
 
 import Sprite from "./Sprite";
 
@@ -6,10 +6,10 @@ export default class Group {
 	constructor(rorke) {
 		this.rorke = {
 			rorke: rorke,
-			app: rorke.pixi.app
+			app: rorke.pixi.app,
 		};
 		this.pixi = {
-			container: undefined
+			container: undefined,
 		};
 
 		this.sprites = [];
@@ -19,7 +19,7 @@ export default class Group {
 	}
 
 	async add() {
-		this.pixi.container = new PIXI.Container();
+		this.pixi.container = new Container();
 		this.rorke.app.stage.addChild(this.pixi.container);
 	}
 
