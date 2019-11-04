@@ -15,6 +15,10 @@ export default class Sprite {
 			sprite: undefined,
 		};
 
+		this.scale = {
+			x: 1,
+			y: 1,
+		};
 		this.x = x;
 		this.y = y;
 		this.textureName = textureName;
@@ -75,6 +79,30 @@ export default class Sprite {
 				animation.update();
 			},
 		};
+
+		this.set = {
+			scale: (x, y) => {
+				if (x === undefined) throw "Must give a value when setting scale";
+				if (y === undefined) {
+					this.scale.x = x;
+					this.scale.y = x;
+				} else {
+					this.scale.x = x;
+					this.scale.y = y;
+				}
+			},
+			texture: name => {
+				this.pixi.sprite.texture = this.getTexture(name).pixi.texture;
+			},
+		};
+	}
+
+	getTexture(name) {
+		for (let texture of this.rorke.textures) {
+			if (texture.name === name) {
+				return texture;
+			}
+		}
 	}
 
 	getAnimation(name) {
@@ -154,7 +182,12 @@ export default class Sprite {
 		this.pixi.sprite.angle = this.angle;
 	}
 
+	updateScale() {
+		this.pixi.sprite.scale.set(this.scale.x, this.scale.y);
+	}
+
 	update(dt) {
+		this.updateScale();
 		this.updatePos(dt);
 		this.updateRot(dt);
 		if (this.type === this.SPRITESHEET) {
