@@ -16,16 +16,16 @@ async function load() {
 	);
 }
 
-let test;
+// let test;
 let mygroup;
 let player;
 async function create() {
 	// game.fps = 10;
-	test = await game.add.sprite(
-		game.width / 2,
-		game.height / 2,
-		"spriteTexture"
-	);
+	// test = await game.add.sprite(
+	// 	game.width / 2,
+	// 	game.height / 2,
+	// 	"spriteTexture"
+	// );
 
 	mygroup = await game.add.group();
 	for (let i = 0; i < 10; i++) {
@@ -59,6 +59,7 @@ function update() {
 	for (let child of mygroup.sprites) {
 		child.rotateTo(player);
 	}
+	mygroup.sprites[0].moveTo(player, 50);
 	// player.rotateTo(mygroup.sprites[0]);
 }
 

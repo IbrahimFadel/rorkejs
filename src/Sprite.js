@@ -175,4 +175,36 @@ export default class Sprite {
 			toDegree(Math.atan2(target.y - this.y, target.x - this.x)) + 90;
 		this.angle = angle;
 	}
+
+	moveTo(target, speed) {
+		if (this.dist(target) <= 1) {
+			this.velocity.x = 0;
+			this.velocity.y = 0;
+			return;
+		}
+		const followedSpriteX = target.x;
+		const followedSpriteY = target.y;
+		const followingSpriteX = this.x;
+		const followingSpriteY = this.y;
+		if (followedSpriteX > followingSpriteX) {
+			this.velocity.x = speed;
+		} else if (followedSpriteX < followingSpriteX) {
+			this.velocity.x = -speed;
+		} else {
+			target.velocity.x = 0;
+		}
+		if (followedSpriteY > followingSpriteY) {
+			this.velocity.y = speed;
+		} else if (followedSpriteY < followingSpriteY) {
+			this.velocity.y = -speed;
+		} else {
+			target.velocity.y = 0;
+		}
+	}
+
+	dist(target) {
+		return Math.sqrt(
+			Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)
+		);
+	}
 }
