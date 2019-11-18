@@ -7,6 +7,9 @@ import Group from "./Group";
 import Input from "./Input";
 import Spritesheet from "./Spritesheet";
 import Graphics from "./Graphics";
+import Text from "./Text";
+import Camera from "./Camera";
+import Physics from "./Physics";
 
 export default class Rorke {
 	constructor(width, height, colour) {
@@ -16,6 +19,7 @@ export default class Rorke {
 		this.version = "1.0";
 		this.fps = 60;
 		this.input = new Input();
+		this._graphics = [];
 		this.graphics = new Graphics(this);
 
 		this.pixi = {
@@ -50,6 +54,12 @@ export default class Rorke {
 				this.groups.push(newGroup);
 				return newGroup;
 			},
+			text: (x, y, text, options) => {
+				const newText = new Text(x, y, text, options, this);
+				newText.add();
+				this.texts.push(newText);
+				return newText;
+			},
 		};
 
 		this.sprites = [];
@@ -58,6 +68,11 @@ export default class Rorke {
 		this.textures = [];
 		this.spritesheets = [];
 		this.spritesheetsLoaded = 0;
+
+		this.texts = [];
+		this.camera = new Camera(this);
+		this.cameraMoveBools = undefined;
+		this.physics = new Physics(this);
 
 		this.printInfo();
 	}
@@ -118,19 +133,42 @@ export default class Rorke {
 			frame++;
 			time = timeNow;
 
-			for (let sprite of this.sprites) {
-				sprite.update(dt);
-			}
+			this.updateSprites(dt);
+			this.updateGroups(dt);
+			this.updateTexts();
 
-			for (let group of this.groups) {
-				group.update();
-				for (let sprite of group.sprites) {
-					sprite.update(dt);
-				}
-			}
+			this.handleCamera();
 
 			await update();
 		});
+	}
+
+	handleCamera() {
+		if (this.camera.followTarget !== undefined) {
+			this.cameraMoveBools = this.camera.handleFollowCalculations();
+			// console.log(this.cameraMoveBools);
+		}
+	}
+
+	updateSprites(dt) {
+		for (let sprite of this.sprites) {
+			sprite.update(dt, this.cameraMoveBools);
+		}
+	}
+
+	updateGroups(dt) {
+		for (let group of this.groups) {
+			group.update();
+			for (let sprite of group.sprites) {
+				sprite.update(dt, this.cameraMoveBools);
+			}
+		}
+	}
+
+	updateTexts() {
+		for (let text of this.texts) {
+			text.update();
+		}
 	}
 }
 

@@ -1,4 +1,4 @@
-import { Sprite as PixiSprite } from "pixi.js";
+import { Sprite as PixiSprite, Rectangle } from "pixi.js";
 
 import Animation from "./Animation";
 import { toDegree } from "./Helpers";
@@ -9,6 +9,7 @@ export default class Sprite {
 			textures: rorke.textures,
 			spritesheets: rorke.spritesheets,
 			app: rorke.pixi.app,
+			graphics: rorke.graphics,
 		};
 
 		this.pixi = {
@@ -19,6 +20,7 @@ export default class Sprite {
 			x: 1,
 			y: 1,
 		};
+		this.fixed = false;
 		this.x = x;
 		this.y = y;
 		this.textureName = textureName;
@@ -27,6 +29,10 @@ export default class Sprite {
 			x: 0,
 			y: 0,
 		};
+		this.mass = 1;
+
+		this.hitbox = undefined;
+
 		this.TEXTURE = 0;
 		this.SPRITESHEET = 1;
 		this.type;
@@ -113,10 +119,21 @@ export default class Sprite {
 		}
 	}
 
+	makeWorldBoundSprite() {
+		const sprite = new PixiSprite();
+		sprite.x = this.x;
+		sprite.y = this.y;
+		// sprite.height
+	}
+
 	async add() {
+		if (this.textureName === "SET_WORLD_BOUNDS") {
+			this.makeWorldBoundSprite();
+			return;
+		}
 		let spriteTexture = undefined;
 		let nameMatches = 0;
-		let textureType;
+		let textureType = -1;
 		for (let texture of this.rorke.textures) {
 			if (texture.name === this.textureName) {
 				spriteTexture = texture;
@@ -186,7 +203,20 @@ export default class Sprite {
 		this.pixi.sprite.scale.set(this.scale.x, this.scale.y);
 	}
 
-	update(dt) {
+	handleCamera(bools, dt) {
+		// console.log(bools.left, dt);
+		if (this.fixed) return;
+		if (bools.left) this.x += 5 * dt;
+		else if (bools.right) this.x -= 5 * dt;
+		else this.x = this.x;
+		if (bools.up) this.y -= 5 * dt;
+		else if (bools.down) this.y += 5 * dt;
+		else this.y = this.y;
+	}
+
+	update(dt, cameraMoveBools) {
+		if (cameraMoveBools !== undefined) this.handleCamera(cameraMoveBools, dt);
+
 		this.updateScale();
 		this.updatePos(dt);
 		this.updateRot(dt);
@@ -239,5 +269,86 @@ export default class Sprite {
 		return Math.sqrt(
 			Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)
 		);
+	}
+
+	showHitBox() {
+		if (this.hitbox !== undefined) {
+			this.hitbox.remove();
+		}
+		this.rorke.graphics.fill(0x000000, 0);
+		this.rorke.graphics.border(2);
+		this.hitbox = this.rorke.graphics.drawShape(
+			this.x - this.pixi.sprite.width / 2,
+			this.y - this.pixi.sprite.height / 2,
+			this.x + this.pixi.sprite.width / 2,
+			this.y - this.pixi.sprite.height / 2,
+			this.x + this.pixi.sprite.width / 2,
+			this.y + this.pixi.sprite.height / 2,
+			this.x - this.pixi.sprite.width / 2,
+			this.y + this.pixi.sprite.height / 2
+		);
+		// this.rorke.graphics.drawShape(0, 0, 100, 0, 100, 100, 0, 100);
+		// this.rorke.graphics.moveTo(
+		// this.x - this.pixi.sprite.width / 2,
+		// this.y - this.pixi.sprite.height / 2
+		// );
+		// this.rorke.graphics.moveTo(50, 50);
+		// console.log(this.x, this.y);
+		// this.rorke.graphics.lineTo(this.x, this.y);
+		// this.rorke.graphics.moveTo(
+		// 	this.x - this.pixi.sprite.width / 2,
+		// 	this.y - this.pixi.sprite.height / 2
+		// );
+		// this.rorke.graphics.lineTo(
+		// 	this.x + this.pixi.sprite.width / 2,
+		// 	this.y - this.pixi.sprite.height / 2
+		// );
+		// // this.rorke.graphics.moveTo(
+		// // 	this.x + this.pixi.sprite.width / 2,
+		// // 	this.y - this.pixi.sprite.height / 2
+		// // );
+		// this.rorke.graphics.lineTo(
+		// 	this.x + this.pixi.sprite.width / 2,
+		// 	this.y + this.pixi.sprite.height / 2
+		// );
+		// this.rorke.graphics.lineTo(
+		// 	this.x - this.pixi.sprite.width / 2,
+		// 	this.y + this.pixi.sprite.height / 2
+		// );
+		// this.rorke.graphics.lineTo(
+		// 	this.x - this.pixi.sprite.width / 2,
+		// 	this.y - this.pixi.sprite.height / 2
+		// );
+		// this.rorke.graphics.moveTo(0, 0);
+		// this.rorke.graphics.lineTo(100, 100);
+		// console.log(this.x - this.pixi.sprite.width / 2);
+		// console.log(this.x + this.pixi.sprite.width / 2);
+		// this.rorke.graphics.moveTo(this.x - this.pixi.sprite.width / 2, );
+		// this.rorke.graphics.lineTo(this.x + this.pixi.sprite.width / 2);
+		// let texture;
+		// if (this.type === this.SPRITESHEET) {
+		// texture = this.textures[0];
+		// console.log(texture.pixi.texture);
+		// }
+		// const texture = this.getTexture(this.textureName);
+		// console.log(this.textureName);
+		// console.log(this.getTexture(this.textureName));
+		// console.log(texture.getLocalBounds());
+		// this.pixi.hitbox = new Rectangle(0, 0, 0, 0);
+		// const lb = this.pixi.sprite._texture.getLocalBounds();
+		// this.rorke.graphics.fill(0x0000ff);
+		// const graphic = this.rorke.graphics.drawRect(
+		// lb.x,
+		// lb.y,
+		// lb.width,
+		// lb.height
+		// );
+		// this.pixi.hitbox = new Rectangle(lb.x, lb.y, lb.width, lb.height);
+		// graphics.hitArea = new PIXI.Rectangle(
+		// 	lb.x - 25,
+		// 	lb.y - 25,
+		// 	lb.width + 50,
+		// 	lb.height + 50
+		// );
 	}
 }

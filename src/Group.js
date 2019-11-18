@@ -28,7 +28,6 @@ export default class Group {
 		await newSprite.add();
 		this.sprites.push(newSprite);
 		this.pixi.container.addChild(newSprite.pixi.sprite);
-
 		return newSprite;
 	}
 
