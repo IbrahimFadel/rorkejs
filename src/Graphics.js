@@ -7,6 +7,7 @@ export default class Graphics {
 		};
 
 		this.fillColour = 0x000000;
+		this.fillAlpha = 1;
 		// this.border = {
 		// 	width: 0,
 		// 	colour: 0x000000,
@@ -25,16 +26,17 @@ export default class Graphics {
 			type,
 			options,
 			this.fillColour,
+			this.fillAlpha,
 			this.border,
 			this.rorke.rorke
 		);
 		newGraphic.draw();
-
 		return newGraphic;
 	}
 
-	fill(colour) {
+	fill(colour, alpha) {
 		this.fillColour = colour;
+		this.fillAlpha = alpha;
 	}
 
 	border(width, colour, alpha, position) {

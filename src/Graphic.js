@@ -1,7 +1,7 @@
 import { Graphics } from "pixi.js";
 
 export default class Graphic {
-	constructor(type, options, fillColour, border, rorke) {
+	constructor(type, options, fillColour, fillAlpha, border, rorke) {
 		this.pixi = {
 			graphic: new Graphics(),
 		};
@@ -9,6 +9,7 @@ export default class Graphic {
 			app: rorke.pixi.app,
 		};
 		this.fillColour = fillColour;
+		this.fillAlpha = fillAlpha;
 		this.type = type;
 		this.options = options;
 		this.border = border;
@@ -16,7 +17,7 @@ export default class Graphic {
 
 	draw() {
 		this.rorke.app.stage.addChild(this.pixi.graphic);
-		this.pixi.graphic.beginFill(this.fillColour);
+		this.pixi.graphic.beginFill(this.fillColour, this.fillAlpha);
 		const { width, colour, alpha, position } = this.border;
 		this.pixi.graphic.lineStyle(width, colour, alpha, position);
 		if (this.type === 0) {

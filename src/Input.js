@@ -39,7 +39,7 @@ export default class Input {
 				repeat = true;
 				const callbackObject = {
 					key: key,
-					code: e.keyCode
+					code: e.keyCode,
 				};
 				fn(callbackObject);
 			}
