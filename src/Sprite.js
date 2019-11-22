@@ -1,7 +1,7 @@
-import { Sprite as PixiSprite, Rectangle } from "pixi.js";
+import { Sprite as PixiSprite } from 'pixi.js';
 
-import Animation from "./Animation";
-import { toDegree } from "./Helpers";
+import Animation from './Animation';
+import { toDegree } from './Helpers';
 
 export default class Sprite {
 	constructor(x, y, textureName, rorke) {
@@ -35,47 +35,47 @@ export default class Sprite {
 
 		this.TEXTURE = 0;
 		this.SPRITESHEET = 1;
-		this.type;
+		this.type = undefined;
 
 		this.textures = [];
 
 		this._animations = [];
 		this.animations = {
 			add: (name, frames, options) => {
-				for (let animation of this._animations) {
+				this._animations.forEach((animation) => {
 					if (animation.name === name) {
-						throw "Can't load animations of same name!";
+						throw new Error("Can't load animations of same name!");
 					}
-				}
-				let animationFrames = [];
+				});
+				const animationFrames = [];
 				for (let i = 0; i < this.textures.length; i++) {
-					for (let index of frames) {
+					frames.forEach((index) => {
 						if (i === index) {
 							animationFrames.push(this.textures[i]);
 						}
-					}
+					});
 				}
 				const newAnimation = new Animation(
 					name,
 					animationFrames,
 					options,
-					this
+					this,
 				);
 				this._animations.push(newAnimation);
 			},
-			remove: name => {
+			remove: (name) => {
 				const animation = this.getAnimation(name);
 				const i = this._animations.indexOf(animation);
 				this._animations.splice(i, i + 1);
 			},
-			play: name => {
-				for (let animation of this._animations) {
+			play: (name) => {
+				this._animations.forEach((animation) => {
 					animation.pause();
-				}
+				});
 				const animation = this.getAnimation(name);
 				animation.play();
 			},
-			pause: name => {
+			pause: (name) => {
 				const animation = this.getAnimation(name);
 				animation.pause();
 			},
@@ -87,36 +87,40 @@ export default class Sprite {
 		};
 
 		this.set = {
-			scale: (x, y) => {
-				if (x === undefined) throw "Must give a value when setting scale";
-				if (y === undefined) {
-					this.scale.x = x;
-					this.scale.y = x;
+			scale: (scaleX, scaleY) => {
+				if (scaleX === undefined) {
+					throw new Error('Must give a value when setting scale');
+				}
+				if (scaleY === undefined) {
+					this.scale.x = scaleX;
+					this.scale.y = scaleX;
 				} else {
-					this.scale.x = x;
-					this.scale.y = y;
+					this.scale.x = scaleX;
+					this.scale.y = scaleY;
 				}
 			},
-			texture: name => {
+			texture: (name) => {
 				this.pixi.sprite.texture = this.getTexture(name).pixi.texture;
 			},
 		};
 	}
 
 	getTexture(name) {
-		for (let texture of this.rorke.textures) {
+		this.rorke.textures.foreach((texture) => {
 			if (texture.name === name) {
 				return texture;
 			}
-		}
+			return -1;
+		});
 	}
 
 	getAnimation(name) {
-		for (let animation of this._animations) {
+		this._animations.forEach((animation) => {
 			if (animation.name === name) {
 				return animation;
 			}
-		}
+			return -1;
+		});
 	}
 
 	makeWorldBoundSprite() {
@@ -127,32 +131,35 @@ export default class Sprite {
 	}
 
 	async add() {
-		if (this.textureName === "SET_WORLD_BOUNDS") {
+		if (this.textureName === 'SET_WORLD_BOUNDS') {
 			this.makeWorldBoundSprite();
 			return;
 		}
-		let spriteTexture = undefined;
+		let spriteTexture;
 		let nameMatches = 0;
 		let textureType = -1;
-		for (let texture of this.rorke.textures) {
+
+		this.rorke.textures.forEach((texture) => {
 			if (texture.name === this.textureName) {
 				spriteTexture = texture;
 				nameMatches++;
 				textureType = this.TEXTURE;
 			}
-		}
-		for (let spritesheet of this.rorke.spritesheets) {
+		});
+		this.rorke.spritesheets.forEach((spritesheet) => {
 			if (spritesheet.name === this.textureName) {
 				spriteTexture = spritesheet;
 				nameMatches++;
 				textureType = this.SPRITESHEET;
 			}
-		}
+		});
 
 		if (nameMatches > 1) {
-			throw "Don't load spritesheets and textures with the same name!";
+			throw new Error(
+				"Don't load spritesheets and textures with the same name!",
+			);
 		} else if (nameMatches < 1) {
-			throw "Texture or Spritesheet could not be found";
+			throw new Error('Texture or Spritesheet could not be found');
 		}
 
 		if (textureType === 0) {
@@ -162,7 +169,9 @@ export default class Sprite {
 			this.type = this.SPRITESHEET;
 			this.addSpriteWithSpritesheet(spriteTexture);
 		} else if (textureType === -1) {
-			throw "The texture you specified does not match any Rorke texture types. Make sure it is a texture or spritesheet";
+			throw new Error(
+				'The texture you specified does not match any Rorke texture types. Make sure it is a texture or spritesheet',
+			);
 		}
 	}
 
@@ -195,7 +204,7 @@ export default class Sprite {
 		this.pixi.sprite.y = this.y;
 	}
 
-	updateRot(dt) {
+	updateRot() {
 		this.pixi.sprite.angle = this.angle;
 	}
 
@@ -219,13 +228,13 @@ export default class Sprite {
 
 		this.updateScale();
 		this.updatePos(dt);
-		this.updateRot(dt);
+		this.updateRot();
 		if (this.type === this.SPRITESHEET) {
-			for (let animation of this._animations) {
+			this._animations.forEach((animation) => {
 				if (!animation.paused) {
 					animation.updateAnimation();
 				}
-			}
+			});
 		}
 	}
 
@@ -267,7 +276,8 @@ export default class Sprite {
 
 	dist(target) {
 		return Math.sqrt(
-			Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2)
+			(target.x - this.x) ** 2 + (target.y - this.y) ** 2,
+			// Math.pow(target.x - this.x, 2) + Math.pow(target.y - this.y, 2),
 		);
 	}
 
@@ -285,7 +295,7 @@ export default class Sprite {
 			this.x + this.pixi.sprite.width / 2,
 			this.y + this.pixi.sprite.height / 2,
 			this.x - this.pixi.sprite.width / 2,
-			this.y + this.pixi.sprite.height / 2
+			this.y + this.pixi.sprite.height / 2,
 		);
 		// this.rorke.graphics.drawShape(0, 0, 100, 0, 100, 100, 0, 100);
 		// this.rorke.graphics.moveTo(

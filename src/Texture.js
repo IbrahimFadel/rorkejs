@@ -1,4 +1,4 @@
-import { Texture as PixiTexture } from "pixi.js";
+import { Texture as PixiTexture } from 'pixi.js';
 
 export default class Texture {
 	constructor(name, path, rorke) {
@@ -13,11 +13,11 @@ export default class Texture {
 	}
 
 	async load() {
-		for (let texture of this.rorke.textures) {
+		this.rorke.textures.forEach((texture) => {
 			if (texture.name === this.name) {
-				throw "Cannot load textures of the same name!";
+				throw new Error('Cannot load textures of the same name!');
 			}
-		}
+		});
 		const newTexture = PixiTexture.from(this.path);
 		this.pixi.texture = newTexture;
 	}

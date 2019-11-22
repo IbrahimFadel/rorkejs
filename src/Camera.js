@@ -3,7 +3,7 @@ export default class Camera {
 		this.rorke = {
 			sprites: rorke.sprites,
 			groups: rorke.groups,
-			rorke: rorke,
+			rorke,
 		};
 		this.padding = {
 			x: 0,
@@ -39,8 +39,8 @@ export default class Camera {
 				moveSpritesRight = true;
 				moveSpritesLeft = false;
 			} else if (
-				this.followTarget.x <
-				this.rorke.rorke.width / 2 - this.padding.x
+				this.followTarget.x
+				< this.rorke.rorke.width / 2 - this.padding.x
 			) {
 				// console.log("right");
 				moveSpritesRight = false;
@@ -56,8 +56,8 @@ export default class Camera {
 				moveSpritesUp = true;
 				moveSpritesDown = false;
 			} else if (
-				this.followTarget.y <
-				this.rorke.rorke.height / 2 - this.padding.y
+				this.followTarget.y
+				< this.rorke.rorke.height / 2 - this.padding.y
 			) {
 				moveSpritesUp = false;
 				moveSpritesDown = true;

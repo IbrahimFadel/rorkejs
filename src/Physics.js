@@ -1,42 +1,42 @@
-import Sprite from "./Sprite";
+import Sprite from './Sprite';
 
 export default class Physics {
 	constructor(rorke) {
 		this.rorke = {
 			sprites: rorke.sprites,
 			groups: rorke.groups,
-			rorke: rorke,
+			rorke,
 		};
 
-		this.SET_WORLD_BOUNDS = "WORLD_BOUNDS";
+		this.SET_WORLD_BOUNDS = 'WORLD_BOUNDS';
 	}
 
 	collide(sprite1, sprite2, cb) {
-		var ab = sprite1.pixi.sprite.getBounds();
-		var bb = sprite2.pixi.sprite.getBounds();
+		const ab = sprite1.pixi.sprite.getBounds();
+		const bb = sprite2.pixi.sprite.getBounds();
 		if (
-			ab.x + ab.width > bb.x &&
-			ab.x < bb.x + bb.width &&
-			ab.y + ab.height > bb.y &&
-			ab.y < bb.y + bb.height
+			ab.x + ab.width > bb.x
+			&& ab.x < bb.x + bb.width
+			&& ab.y + ab.height > bb.y
+			&& ab.y < bb.y + bb.height
 		) {
 			if (cb !== undefined) cb();
 			else {
 				this.transferVelocity(sprite1, sprite2);
 
 				return (
-					ab.x + ab.width > bb.x &&
-					ab.x < bb.x + bb.width &&
-					ab.y + ab.height > bb.y &&
-					ab.y < bb.y + bb.height
+					ab.x + ab.width > bb.x
+					&& ab.x < bb.x + bb.width
+					&& ab.y + ab.height > bb.y
+					&& ab.y < bb.y + bb.height
 				);
 			}
 		} else {
 			return (
-				ab.x + ab.width > bb.x &&
-				ab.x < bb.x + bb.width &&
-				ab.y + ab.height > bb.y &&
-				ab.y < bb.y + bb.height
+				ab.x + ab.width > bb.x
+				&& ab.x < bb.x + bb.width
+				&& ab.y + ab.height > bb.y
+				&& ab.y < bb.y + bb.height
 			);
 		}
 	}
@@ -53,12 +53,12 @@ export default class Physics {
 		// MT = m1 + m2
 		// VF = ((v1 x m1) - (v2 x m2) / MT) = VF
 
-		const vx1 = sprite1.velocity.x,
-			vy1 = sprite1.velocity.y,
-			vx2 = sprite2.velocity.x,
-			vy2 = sprite2.velocity.y,
-			m1 = sprite1.mass,
-			m2 = sprite2.mass;
+		const vx1 = sprite1.velocity.x;
+		const vy1 = sprite1.velocity.y;
+		const vx2 = sprite2.velocity.x;
+		const vy2 = sprite2.velocity.y;
+		const m1 = sprite1.mass;
+		const m2 = sprite2.mass;
 
 		const massTotal = m1 + m2;
 		const velocityFinalx = (vx1 * m1 - vx2 * m2) / massTotal;

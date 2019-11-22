@@ -1,4 +1,4 @@
-import { Graphics } from "pixi.js";
+import { Graphics } from 'pixi.js';
 
 export default class Graphic {
 	constructor(type, options, fillColour, fillAlpha, border, rorke) {
@@ -18,8 +18,8 @@ export default class Graphic {
 	draw() {
 		this.rorke.app.stage.addChild(this.pixi.graphic);
 		this.pixi.graphic.beginFill(this.fillColour, this.fillAlpha);
-		const { width, colour, alpha, position } = this.border;
-		this.pixi.graphic.lineStyle(width, colour, alpha, position);
+		const { lineWidth, lineColour, lineAlpha, linePosition } = this.border;
+		this.pixi.graphic.lineStyle(lineWidth, lineColour, lineAlpha, linePosition);
 		if (this.type === 0) {
 			const { x, y, width, height } = this.options;
 			this.drawRect(x, y, width, height);
