@@ -1,13 +1,13 @@
 export function RGB2HEX(r, g, b) {
-	r = r.toString(16);
-	g = g.toString(16);
-	b = b.toString(16);
+	let newR = r.toString(16);
+	let newG = g.toString(16);
+	let newB = b.toString(16);
 
-	if (r.length == 1) r = "0" + r;
-	if (g.length == 1) g = "0" + g;
-	if (b.length == 1) b = "0" + b;
+	if (newR.length === 1) newR = `0${newR}`;
+	if (newG.length === 1) newG = `0${newG}`;
+	if (newB.length === 1) newB = `0${newB}`;
 
-	return "0x" + r + g + b;
+	return `0x${newR}${newG}${newB}`;
 }
 
 export function toDegree(rad) {

@@ -1,11 +1,11 @@
-import { Container } from "pixi.js";
+import { Container } from 'pixi.js';
 
-import Sprite from "./Sprite";
+import Sprite from './Sprite';
 
 export default class Group {
 	constructor(rorke) {
 		this.rorke = {
-			rorke: rorke,
+			rorke,
 			app: rorke.pixi.app,
 		};
 		this.pixi = {

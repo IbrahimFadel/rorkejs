@@ -1,10 +1,10 @@
-import Texture from "./Texture";
+import Texture from './Texture';
 
 export default class Spritesheet {
 	constructor(name, path, options, rorke) {
 		this.rorke = {
 			textures: rorke.textures,
-			rorke: rorke,
+			rorke,
 			spritesheetsLoaded: rorke.spritesheetsLoaded,
 		};
 
@@ -21,16 +21,21 @@ export default class Spritesheet {
 	}
 
 	async load(callback) {
-		if (Object.keys(this.options).length < 3)
-			throw "Specify tileW, tileH, and tiles when loading spritesheets";
+		if (Object.keys(this.options).length < 3) {
+			throw new Error(
+				'Specify tileW, tileH, and tiles when loading spritesheets',
+			);
+		}
 
 		const spritesheetImage = new Image();
 		spritesheetImage.src = this.path;
 		spritesheetImage.onerror = () => {
-			throw "Something went wrong loading a spritesheet. Make sure the path is correct";
+			throw new Error(
+				'Something went wrong loading a spritesheet. Make sure the path is correct',
+			);
 		};
 		spritesheetImage.onload = async () => {
-			await this.splitImages(spritesheetImage, textures => {
+			await this.splitImages(spritesheetImage, (textures) => {
 				this.textures = textures;
 				callback(textures);
 			});
@@ -38,7 +43,7 @@ export default class Spritesheet {
 	}
 
 	async splitImages(img, callback) {
-		let textures = [];
+		const textures = [];
 		this.imageW = img.naturalWidth;
 		this.imageH = img.naturalHeight;
 		const maxInRow = parseInt(this.imageW / this.tileW);
@@ -46,15 +51,15 @@ export default class Spritesheet {
 		let xCount = 0;
 
 		for (let i = 0; i < this.tiles; i++) {
-			if (i % maxInRow === 0 && i != 0) {
+			if (i % maxInRow === 0 && i !== 0) {
 				xCount = 0;
 				col++;
 			}
 			const x1 = xCount * this.tileW;
 			const y1 = col * this.tileH;
-			const tile = new Image(),
-				can = document.createElement("canvas"),
-				ctx = can.getContext("2d");
+			const tile = new Image();
+			const can = document.createElement('canvas');
+			const ctx = can.getContext('2d');
 			can.width = this.tileW;
 			can.height = this.tileH;
 			tile.src = this.path;
@@ -68,7 +73,7 @@ export default class Spritesheet {
 					0,
 					0,
 					this.tileW,
-					this.tileH
+					this.tileH,
 				);
 				const imgUrl = can.toDataURL();
 				const newTexture = new Texture(this.name + i, imgUrl, this.rorke.rorke);

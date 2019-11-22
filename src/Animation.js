@@ -32,9 +32,7 @@ export default class Animation {
 			this.interval = 0;
 			if (this.repeat) {
 				if (this.frame === this.frames.length) this.frame = 0;
-			} else {
-				if (this.frame === this.frames.length) return;
-			}
+			} else if (this.frame === this.frames.length) return;
 
 			this.setFrame(this.frame);
 			this.frame++;

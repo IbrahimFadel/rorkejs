@@ -1,22 +1,22 @@
-import { Application } from "pixi.js";
+import { Application } from 'pixi.js';
 
-import { RGB2HEX } from "./Helpers";
-import Sprite from "./Sprite";
-import Texture from "./Texture";
-import Group from "./Group";
-import Input from "./Input";
-import Spritesheet from "./Spritesheet";
-import Graphics from "./Graphics";
-import Text from "./Text";
-import Camera from "./Camera";
-import Physics from "./Physics";
+import { RGB2HEX } from './Helpers';
+import Sprite from './Sprite';
+import Texture from './Texture';
+import Group from './Group';
+import Input from './Input';
+import Spritesheet from './Spritesheet';
+import Graphics from './Graphics';
+import Text from './Text';
+import Camera from './Camera';
+import Physics from './Physics';
 
 export default class Rorke {
 	constructor(width, height, colour) {
 		this.width = width;
 		this.height = height;
 		this.colour = colour || [0, 0, 0];
-		this.version = "1.0";
+		this.version = '1.0';
 		this.fps = 60;
 		this.input = new Input();
 		this._graphics = [];
@@ -35,7 +35,7 @@ export default class Rorke {
 			},
 			spritesheet: async (name, path, options) => {
 				const newSpritesheet = new Spritesheet(name, path, options, this);
-				await newSpritesheet.load(textures => {
+				await newSpritesheet.load((textures) => {
 					this.spritesheets.push(newSpritesheet);
 				});
 			},
@@ -125,7 +125,7 @@ export default class Rorke {
 		const TICK = 1000 / this.fps;
 		let time = 0;
 		let frame = 0;
-		this.pixi.app.ticker.add(async dt => {
+		this.pixi.app.ticker.add(async (dt) => {
 			const timeNow = new Date().getTime();
 			const timeDiff = timeNow - time;
 			if (timeDiff < TICK) return;
@@ -151,26 +151,27 @@ export default class Rorke {
 	}
 
 	updateSprites(dt) {
-		for (let sprite of this.sprites) {
+		this.sprites.forEach((sprite) => {
 			sprite.update(dt, this.cameraMoveBools);
-		}
+		});
 	}
 
 	updateGroups(dt) {
-		for (let group of this.groups) {
+		this.groups.forEach((group) => {
 			group.update();
-			for (let sprite of group.sprites) {
+			group.sprites.forEach((sprite) => {
 				sprite.update(dt, this.cameraMoveBools);
-			}
-		}
+			});
+		});
 	}
 
 	updateTexts() {
-		for (let text of this.texts) {
+		this.texts.forEach((text) => {
 			text.update();
-		}
+		});
 	}
 }
 
-const global = window || global;
+const global = window;
 global.Rorke = Rorke;
+// If broken, add || global to the const global declaration
