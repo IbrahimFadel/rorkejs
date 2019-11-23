@@ -1,4 +1,4 @@
-import { Text as PixiText, TextStyle } from 'pixi.js';
+import {Text as PixiText, TextStyle} from 'pixi.js';
 
 export default class Text {
 	constructor(x, y, text, options, rorke) {

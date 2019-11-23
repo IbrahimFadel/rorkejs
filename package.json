@@ -7,24 +7,16 @@
 		"pixi.js": "^5.1.5"
 	},
 	"devDependencies": {
-		"eslint": "^6.1.0",
-		"eslint-config-airbnb": "^18.0.1",
-		"eslint-plugin-import": "^2.18.2",
-		"eslint-plugin-jsx-a11y": "^6.2.3",
-		"eslint-plugin-react": "^7.16.0",
-		"eslint-plugin-react-hooks": "^1.7.0",
-		"i": "^0.3.6",
-		"lodash": "^4.17.15",
+		"eslint": "^6.7.0",
+		"eslint-config-google": "^0.14.0",
 		"nodemon": "^2.0.1",
-		"npm": "^6.13.1",
-		"uglify-js": "^3.6.7",
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.9"
 	},
 	"scripts": {
 		"build": "webpack",
-		"build:watch": "webpack --watch --progress && uglify-js --compress --mangle dist/bundle.min.js",
-		"lint": "./node_modules/.bin/eslint src",
+		"build:watch": "webpack --watch --progress",
+		"lint": "./node_modules/.bin/eslint --fix src",
 		"lint:watch": "nodemon --watch src -x 'npm run lint'"
 	}
 }

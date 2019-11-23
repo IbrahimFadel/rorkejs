@@ -15,28 +15,28 @@ export default class Physics {
 		const ab = sprite1.pixi.sprite.getBounds();
 		const bb = sprite2.pixi.sprite.getBounds();
 		if (
-			ab.x + ab.width > bb.x
-			&& ab.x < bb.x + bb.width
-			&& ab.y + ab.height > bb.y
-			&& ab.y < bb.y + bb.height
+			ab.x + ab.width > bb.x &&
+			ab.x < bb.x + bb.width &&
+			ab.y + ab.height > bb.y &&
+			ab.y < bb.y + bb.height
 		) {
 			if (cb !== undefined) cb();
 			else {
 				this.transferVelocity(sprite1, sprite2);
 
 				return (
-					ab.x + ab.width > bb.x
-					&& ab.x < bb.x + bb.width
-					&& ab.y + ab.height > bb.y
-					&& ab.y < bb.y + bb.height
+					ab.x + ab.width > bb.x &&
+					ab.x < bb.x + bb.width &&
+					ab.y + ab.height > bb.y &&
+					ab.y < bb.y + bb.height
 				);
 			}
 		} else {
 			return (
-				ab.x + ab.width > bb.x
-				&& ab.x < bb.x + bb.width
-				&& ab.y + ab.height > bb.y
-				&& ab.y < bb.y + bb.height
+				ab.x + ab.width > bb.x &&
+				ab.x < bb.x + bb.width &&
+				ab.y + ab.height > bb.y &&
+				ab.y < bb.y + bb.height
 			);
 		}
 	}
