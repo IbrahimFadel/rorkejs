@@ -1,4 +1,4 @@
-import { Texture as PixiTexture } from 'pixi.js';
+import {Texture as PixiTexture} from 'pixi.js';
 
 export default class Texture {
 	constructor(name, path, rorke) {

@@ -3,7 +3,7 @@
 		"browser": true,
 		"es6": true
 	},
-	"extends": "airbnb",
+	"extends": ["eslint:recommended", "google"],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
@@ -15,12 +15,6 @@
 	"rules": {
 		"no-var": 2,
 		"indent": [2, "tab"],
-		"no-tabs": 0,
-		"prefer-arrow-callback": 1,
-		"no-plusplus": 0,
-		"no-duplicate-imports": 1,
-		"no-underscore-dangle": 0,
-		"operator-linebreak": 0,
-		"object-curly-newline": 0
+		"no-tabs": 0
 	}
 }

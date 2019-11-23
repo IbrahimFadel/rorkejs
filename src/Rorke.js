@@ -1,6 +1,6 @@
-import { Application } from 'pixi.js';
+import {Application} from 'pixi.js';
 
-import { RGB2HEX } from './Helpers';
+import {RGB2HEX} from './Helpers';
 import Sprite from './Sprite';
 import Texture from './Texture';
 import Group from './Group';

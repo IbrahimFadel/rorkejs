@@ -1,7 +1,7 @@
-import { Sprite as PixiSprite } from 'pixi.js';
+import {Sprite as PixiSprite} from 'pixi.js';
 
 import Animation from './Animation';
-import { toDegree } from './Helpers';
+import {toDegree} from './Helpers';
 
 export default class Sprite {
 	constructor(x, y, textureName, rorke) {
@@ -44,7 +44,7 @@ export default class Sprite {
 			add: (name, frames, options) => {
 				this._animations.forEach((animation) => {
 					if (animation.name === name) {
-						throw new Error("Can't load animations of same name!");
+						throw new Error('Can\'t load animations of same name!');
 					}
 				});
 				const animationFrames = [];
@@ -156,7 +156,7 @@ export default class Sprite {
 
 		if (nameMatches > 1) {
 			throw new Error(
-				"Don't load spritesheets and textures with the same name!",
+				'Don\'t load spritesheets and textures with the same name!',
 			);
 		} else if (nameMatches < 1) {
 			throw new Error('Texture or Spritesheet could not be found');
