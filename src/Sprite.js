@@ -1,8 +1,29 @@
-import {Sprite as PixiSprite} from 'pixi.js';
+import { Sprite as PixiSprite } from 'pixi.js';
 
 import Animation from './Animation';
-import {toDegree} from './Helpers';
+import { toDegree } from './Helpers';
 
+/**
+ * Rorke Sprite
+ *
+ * @example
+ *
+ * let player;
+ * async function create() {
+ * 	player = await game.add.sprite(game.width / 2, game.height / 2, "playertexture");
+ * }
+ *
+ * async function update() {
+ * 	player.x += 1;
+ *	player.y += 1;
+ *	player.angle += 0.1;
+ * }
+ *
+ * @param {Number} x x coordinate
+ * @param {Number} y y coordinate
+ * @param {String} textureName name of texture
+ * @param {Object} rorke instance of game
+ */
 export default class Sprite {
 	constructor(x, y, textureName, rorke) {
 		this.rorke = {
@@ -40,11 +61,12 @@ export default class Sprite {
 		this.textures = [];
 
 		this._animations = [];
+
 		this.animations = {
 			add: (name, frames, options) => {
 				this._animations.forEach((animation) => {
 					if (animation.name === name) {
-						throw new Error('Can\'t load animations of same name!');
+						throw new Error("Can't load animations of same name!");
 					}
 				});
 				const animationFrames = [];
@@ -105,6 +127,11 @@ export default class Sprite {
 		};
 	}
 
+	/**
+	 * Get a Rorke texture given its name
+	 * @param {String} name name of texture
+	 * @return {Object|Number} Texture if it exists, otherwise -1
+	 */
 	getTexture(name) {
 		this.rorke.textures.foreach((texture) => {
 			if (texture.name === name) {
@@ -114,6 +141,11 @@ export default class Sprite {
 		});
 	}
 
+	/**
+	 * Get a Rorke Animation given its name
+	 * @param {String} name name of animation
+	 * @return {Object|Number} Animation if it exists, otherwise -1
+	 */
 	getAnimation(name) {
 		this._animations.forEach((animation) => {
 			if (animation.name === name) {
@@ -130,6 +162,9 @@ export default class Sprite {
 		// sprite.height
 	}
 
+	/**
+	 * Create a pixi sprite and add it to the game
+	 */
 	async add() {
 		if (this.textureName === 'SET_WORLD_BOUNDS') {
 			this.makeWorldBoundSprite();
@@ -156,7 +191,7 @@ export default class Sprite {
 
 		if (nameMatches > 1) {
 			throw new Error(
-				'Don\'t load spritesheets and textures with the same name!',
+				"Don't load spritesheets and textures with the same name!",
 			);
 		} else if (nameMatches < 1) {
 			throw new Error('Texture or Spritesheet could not be found');
@@ -175,6 +210,10 @@ export default class Sprite {
 		}
 	}
 
+	/**
+	 * Create a new sprite with a Texture
+	 * @param {Object} spriteTexture the texture
+	 */
 	addSpriteWithTexture(spriteTexture) {
 		const pixiTexture = spriteTexture.pixi.texture;
 		const sprite = new PixiSprite(pixiTexture);
@@ -185,6 +224,10 @@ export default class Sprite {
 		this.rorke.app.stage.addChild(sprite);
 	}
 
+	/**
+	 * Create a new sprite with a Spritesheet
+	 * @param {Object} spritesheet the spritesheet
+	 */
 	addSpriteWithSpritesheet(spritesheet) {
 		this.textures = spritesheet.textures;
 
@@ -197,6 +240,10 @@ export default class Sprite {
 		this.rorke.app.stage.addChild(sprite);
 	}
 
+	/**
+	 * Update the x and y values of the pixi sprite according to the rorke sprite x and y values
+	 * @param {Number} dt delta time
+	 */
 	updatePos(dt) {
 		this.x += (this.velocity.x / 30) * dt;
 		this.y += (this.velocity.y / 30) * dt;
@@ -204,10 +251,16 @@ export default class Sprite {
 		this.pixi.sprite.y = this.y;
 	}
 
+	/**
+	 * Update the angle value of the pixi sprite according to the rorke angle
+	 */
 	updateRot() {
 		this.pixi.sprite.angle = this.angle;
 	}
 
+	/**
+	 * Update the scale value of the pixi sprite according to the rorke scale
+	 */
 	updateScale() {
 		this.pixi.sprite.scale.set(this.scale.x, this.scale.y);
 	}
@@ -223,6 +276,11 @@ export default class Sprite {
 		else this.y = this.y;
 	}
 
+	/**
+	 * Update all the pixi values according to all the rorke sprite values, and handle any animation
+	 * @param {Number} dt delta time
+	 * @param {Object} cameraMoveBools boolean values of the camera movements
+	 */
 	update(dt, cameraMoveBools) {
 		if (cameraMoveBools !== undefined) this.handleCamera(cameraMoveBools, dt);
 
@@ -238,16 +296,28 @@ export default class Sprite {
 		}
 	}
 
+	/**
+	 * Kill a sprite
+	 */
 	kill() {
 		this.pixi.sprite.destroy();
 	}
 
+	/**
+	 * Rotate towards a sprite
+	 * @param {Object} target Sprite to rotate towards
+	 */
 	rotateTo(target) {
 		const angle =
 			toDegree(Math.atan2(target.y - this.y, target.x - this.x)) + 90;
 		this.angle = angle;
 	}
 
+	/**
+	 * Move towards a sprite
+	 * @param {Object} target Sprite to move towards
+	 * @param {Number} speed Velocity at which to move
+	 */
 	moveTo(target, speed) {
 		if (this.dist(target) <= 1) {
 			this.velocity.x = 0;
@@ -274,6 +344,10 @@ export default class Sprite {
 		}
 	}
 
+	/**
+	 * Get distance to a sprite
+	 * @param {Object} target Sprite to get distance to
+	 */
 	dist(target) {
 		return Math.sqrt(
 			(target.x - this.x) ** 2 + (target.y - this.y) ** 2,
@@ -281,6 +355,9 @@ export default class Sprite {
 		);
 	}
 
+	/**
+	 * Show the hitbox around a sprite
+	 */
 	showHitBox() {
 		if (this.hitbox !== undefined) {
 			this.hitbox.remove();
@@ -297,68 +374,5 @@ export default class Sprite {
 			this.x - this.pixi.sprite.width / 2,
 			this.y + this.pixi.sprite.height / 2,
 		);
-		// this.rorke.graphics.drawShape(0, 0, 100, 0, 100, 100, 0, 100);
-		// this.rorke.graphics.moveTo(
-		// this.x - this.pixi.sprite.width / 2,
-		// this.y - this.pixi.sprite.height / 2
-		// );
-		// this.rorke.graphics.moveTo(50, 50);
-		// console.log(this.x, this.y);
-		// this.rorke.graphics.lineTo(this.x, this.y);
-		// this.rorke.graphics.moveTo(
-		// 	this.x - this.pixi.sprite.width / 2,
-		// 	this.y - this.pixi.sprite.height / 2
-		// );
-		// this.rorke.graphics.lineTo(
-		// 	this.x + this.pixi.sprite.width / 2,
-		// 	this.y - this.pixi.sprite.height / 2
-		// );
-		// // this.rorke.graphics.moveTo(
-		// // 	this.x + this.pixi.sprite.width / 2,
-		// // 	this.y - this.pixi.sprite.height / 2
-		// // );
-		// this.rorke.graphics.lineTo(
-		// 	this.x + this.pixi.sprite.width / 2,
-		// 	this.y + this.pixi.sprite.height / 2
-		// );
-		// this.rorke.graphics.lineTo(
-		// 	this.x - this.pixi.sprite.width / 2,
-		// 	this.y + this.pixi.sprite.height / 2
-		// );
-		// this.rorke.graphics.lineTo(
-		// 	this.x - this.pixi.sprite.width / 2,
-		// 	this.y - this.pixi.sprite.height / 2
-		// );
-		// this.rorke.graphics.moveTo(0, 0);
-		// this.rorke.graphics.lineTo(100, 100);
-		// console.log(this.x - this.pixi.sprite.width / 2);
-		// console.log(this.x + this.pixi.sprite.width / 2);
-		// this.rorke.graphics.moveTo(this.x - this.pixi.sprite.width / 2, );
-		// this.rorke.graphics.lineTo(this.x + this.pixi.sprite.width / 2);
-		// let texture;
-		// if (this.type === this.SPRITESHEET) {
-		// texture = this.textures[0];
-		// console.log(texture.pixi.texture);
-		// }
-		// const texture = this.getTexture(this.textureName);
-		// console.log(this.textureName);
-		// console.log(this.getTexture(this.textureName));
-		// console.log(texture.getLocalBounds());
-		// this.pixi.hitbox = new Rectangle(0, 0, 0, 0);
-		// const lb = this.pixi.sprite._texture.getLocalBounds();
-		// this.rorke.graphics.fill(0x0000ff);
-		// const graphic = this.rorke.graphics.drawRect(
-		// lb.x,
-		// lb.y,
-		// lb.width,
-		// lb.height
-		// );
-		// this.pixi.hitbox = new Rectangle(lb.x, lb.y, lb.width, lb.height);
-		// graphics.hitArea = new PIXI.Rectangle(
-		// 	lb.x - 25,
-		// 	lb.y - 25,
-		// 	lb.width + 50,
-		// 	lb.height + 50
-		// );
 	}
 }

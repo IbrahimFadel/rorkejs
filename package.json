@@ -4,6 +4,8 @@
 	"main": "index.js",
 	"license": "MIT",
 	"dependencies": {
+		"jsdoc": "^3.6.3",
+		"jsdoc-export-default-interop": "^0.3.1",
 		"pixi.js": "^5.1.5"
 	},
 	"devDependencies": {
@@ -17,6 +19,9 @@
 		"build": "webpack",
 		"build:watch": "webpack --watch --progress",
 		"lint": "./node_modules/.bin/eslint --fix src",
-		"lint:watch": "nodemon --watch src -x 'npm run lint'"
+		"lint:watch": "nodemon --watch src -x 'yarn lint'",
+		"doc": "./node_modules/.bin/jsdoc -c jsdoc.json",
+		"doc:watch": "nodemon --watch src -x 'yarn doc'",
+		"production": "yarn build && yarn doc"
 	}
 }

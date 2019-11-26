@@ -1,3 +1,33 @@
+/**
+ * Rorke Input
+ *
+ * @example
+ *
+ * async function update() {
+ * 	if (game.input.keyIsDown('w')) {
+		player.velocity.y = -100;
+		player.animations.play('walkUp');
+	} else if (game.input.keyIsDown('s')) {
+		player.animations.play('walkDown');
+		player.velocity.y = 100;
+	} else {
+		player.velocity.y = 0;
+		player.animations.pause('walkUp');
+		player.animations.pause('walkDown');
+	}
+	if (game.input.keyIsDown('a')) {
+		player.velocity.x = -100;
+		player.animations.play('walkLeft');
+	} else if (game.input.keyIsDown('d')) {
+		player.velocity.x = 100;
+		player.animations.play('walkRight');
+	} else {
+		player.animations.pause('walkLeft');
+		player.animations.pause('walkRight');
+		player.velocity.x = 0;
+	}
+ * }
+ */
 export default class Input {
 	constructor() {
 		this.keyArray = 'a b c d e f g h i j k l m n o p q r s t u v w x y z left right down up shift tab space'.split(
