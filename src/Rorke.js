@@ -11,6 +11,22 @@ import Text from './Text';
 import Camera from './Camera';
 import Physics from './Physics';
 
+/**
+ * Rorke game instance
+ *
+ * @example
+ * const game = new Rorke(800, 600, [0, 0, 0]);
+ * game.start();
+ *
+ * async function load() {}
+ * async function create() {}
+ * async function update() {}
+ *
+ *
+ * @param {Number} width canvas width
+ * @param {Number} height canvas height
+ * @param {Number[]} colour canvar colour
+ */
 export default class Rorke {
 	constructor(width, height, colour) {
 		this.width = width;
@@ -77,6 +93,9 @@ export default class Rorke {
 		this.printInfo();
 	}
 
+	/**
+	 * Prints a styled message to console saying rorke version and author
+	 */
 	printInfo() {
 		const consoleStyles = `background: linear-gradient(#D33106, #571402);
               border: 1px solid #3E0E02;
@@ -91,6 +110,10 @@ export default class Rorke {
 		console.log(`%c Rorke ${this.version}\n By: Ibrahim Fadel`, consoleStyles);
 	}
 
+	/**
+	 * Creates a pixi app and appends it to the canvas
+	 * @return {Object} A pixi app
+	 */
 	createApp() {
 		const hexColour = RGB2HEX(this.colour[0], this.colour[1], this.colour[2]);
 		const app = new Application({
@@ -102,10 +125,16 @@ export default class Rorke {
 		return app;
 	}
 
+	/**
+	 * Starts the game - Runs the load function
+	 */
 	start() {
 		this.runLoad();
 	}
 
+	/**
+	 * Loads all textures and spritesheets
+	 */
 	async runLoad() {
 		await load();
 		const test = setInterval(() => {
@@ -116,11 +145,17 @@ export default class Rorke {
 		}, 1);
 	}
 
+	/**
+	 * Runs once, create sprites etc.
+	 */
 	async runCreate() {
 		await create();
 		this.runUpdate();
 	}
 
+	/**
+	 * Runs every frame - Updates all game objects
+	 */
 	async runUpdate() {
 		const TICK = 1000 / this.fps;
 		let time = 0;
@@ -143,6 +178,9 @@ export default class Rorke {
 		});
 	}
 
+	/**
+	 * Assigns the cameraMoveBools - Whether or not the camera requires movement(left, right, up and down)
+	 */
 	handleCamera() {
 		if (this.camera.followTarget !== undefined) {
 			this.cameraMoveBools = this.camera.handleFollowCalculations();
@@ -150,12 +188,20 @@ export default class Rorke {
 		}
 	}
 
+	/**
+	 * Update pixi sprite values according to rorke sprite values
+	 * @param {Number} dt delta time - Time since last update
+	 */
 	updateSprites(dt) {
 		this.sprites.forEach((sprite) => {
 			sprite.update(dt, this.cameraMoveBools);
 		});
 	}
 
+	/**
+	 * Update pixi sprite values according to rorke sprite values for each sprite in group
+	 * @param {Number} dt delta time - Time since last update
+	 */
 	updateGroups(dt) {
 		this.groups.forEach((group) => {
 			group.update();
@@ -165,6 +211,9 @@ export default class Rorke {
 		});
 	}
 
+	/**
+	 * Update pixi text values according to rorke text values
+	 */
 	updateTexts() {
 		this.texts.forEach((text) => {
 			text.update();
