@@ -1,4 +1,3 @@
-//@ts-ignore
 const game = new Rorke(800, 600, [105, 50, 50]);
 
 game.start();
