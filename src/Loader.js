@@ -18,15 +18,15 @@ export default class Loader extends PixiLoader {
 		this.rorkeResources.push({ name, options });
 	}
 
-	async splitSpritesheetIntoTiles(spritesheet, options, cb) {
+	async splitSpritesheetIntoTiles(spritesheet, options) {
 		const can = document.createElement('canvas');
 		can.width = options.tileW;
 		can.height = options.tileH;
 		const ctx = can.getContext('2d');
 		const img = new Image();
 		img.src = spritesheet.src;
-		img.onload = () => {
-			let tileUrls = [];
+		let tileUrls = [];
+		img.onload = await (() => {
 			const spritesheetWidth = img.width;
 			let xdist = 0;
 			let ydist = 0;
@@ -57,7 +57,8 @@ export default class Loader extends PixiLoader {
 				ctx.clearRect(0, 0, can.width, can.height);
 				x++;
 			}
-			cb(tileUrls);
-		};
+		})();
+
+		return tileUrls;
 	}
 }

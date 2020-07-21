@@ -12,13 +12,27 @@ function load() {
 	});
 }
 
-let player;
+let player1;
+let player2;
 function create() {
-	player = game.add.sprite(
+	player1 = game.add.sprite(
+		game.screen.width / 2 - 500,
+		game.screen.height / 2 + 300,
+		'player',
+	);
+
+	player2 = game.add.sprite(
 		game.screen.width / 2,
 		game.screen.height / 2,
 		'player',
 	);
+
+	player2.mass = 500;
+
+	player1.velocity.x = 150;
+	player1.velocity.y = -80;
 }
 
-function update() {}
+function update() {
+	game.physics.collide(player1, player2);
+}

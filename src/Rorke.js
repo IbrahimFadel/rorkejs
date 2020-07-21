@@ -1,9 +1,10 @@
 'use strict';
 
-import { Application } from 'pixi.js';
+import { Application, resources } from 'pixi.js';
 import { rgbToHex } from './Helpers';
 import Loader from './Loader';
 import Sprite from './Sprite';
+import Physics from './Physics';
 
 export default class Rorke extends Application {
 	constructor(width, height, colour) {
@@ -17,6 +18,7 @@ export default class Rorke extends Application {
 		this.height = height;
 		this.colour = colour;
 		this.Loader = new Loader();
+		this.physics = new Physics();
 		this.textures = new Map();
 		this.spritesheets = new Map();
 		this.sprites = [];
@@ -38,27 +40,22 @@ export default class Rorke extends Application {
 	init() {
 		document.body.appendChild(this.view);
 		load();
-		this.Loader.load((loader, resources) => {
+		this.Loader.load(async (loader, resources) => {
 			let i = 0;
-			for (const [key, value] of Object.entries(resources)) {
-				if (loader.rorkeResources[i].options) {
-					this.Loader.splitSpritesheetIntoTiles(
-						value.data,
-						loader.rorkeResources[i].options,
-						urls => {
-							this.spritesheets.set(key, {
-								texture: value.texture,
-								options: loader.rorkeResources[i].options,
-								tiles: urls,
-							});
-							i++;
-						},
-					);
+			for(const [name, value] of Object.entries(resources)) {
+				if(loader.rorkeResources[i].options) {
+					const urls = await this.Loader.splitSpritesheetIntoTiles(value.data, loader.rorkeResources[i].options);
+					this.spritesheets.set(name, {
+						texture: value.texture,
+						options: loader.rorkeResources[i].options,
+						tiles: urls
+					});
 				} else {
-					this.textures.set(key, value.texture);
-					i++;
+					this.textures.set(name, value.texture);
 				}
+				i++;
 			}
+
 			this.runCreate();
 		});
 	}
@@ -72,15 +69,23 @@ export default class Rorke extends Application {
 	}
 
 	runCreate() {
-		console.log(this.textures, this.spritesheets);
 		create();
 		this.runUpdate();
 	}
 
 	runUpdate() {
 		this.ticker.add(() => {
+
+			this.updateSprites();
+
 			update();
 		});
+	}
+
+	updateSprites() {
+		for(const sprite of this.sprites) {
+			sprite.update();
+		}
 	}
 
 	addSprite(x, y, textureName) {
@@ -88,6 +93,8 @@ export default class Rorke extends Application {
 		const newSprite = new Sprite(x, y, texture);
 		this.stage.addChild(newSprite);
 		this.sprites.push(newSprite);
+
+		return newSprite;
 	}
 }
 
