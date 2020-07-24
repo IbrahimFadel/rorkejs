@@ -1,6 +1,12 @@
 'use strict';
 
 import { Sprite as PixiSprite } from 'pixi.js';
+import Animation from './Animation';
+
+export const SPRITE_TYPES = {
+	SPRITE: 0,
+	SPRITESHEET: 1,
+};
 
 export default class Sprite extends PixiSprite {
 	constructor(x, y, texture) {
@@ -9,16 +15,28 @@ export default class Sprite extends PixiSprite {
 		this.y = y;
 		this.anchor.set(0.5);
 		this.texture = texture;
+		this.textures = [];
+		this._animations = new Map();
+		this.type = undefined;
 
 		this.mass = 100;
 		this.velocity = {
 			x: 0,
-			y: 0
-		}
+			y: 0,
+		};
+		this.immovable = false;
+
+		this.animations = {
+			add: (name, frames, options) => this.addAnimation(name, frames, options),
+			play: name => this.playAnimation(name),
+			pause: name => this.pauseAnimation(name),
+		};
 	}
 
 	update() {
-		this.updatePosition();
+		if (!this.immovable) {
+			this.updatePosition();
+		}
 	}
 
 	updatePosition() {
@@ -26,11 +44,21 @@ export default class Sprite extends PixiSprite {
 		this.y += this.velocity.y / 50;
 	}
 
-	// moveForward(velocity) {
-	// 	const y = Math.sin(this.angle) * velocity;
-	// 	const x = Math.cos(this.angle) * velocity;
+	addAnimation(name, frames, options) {
+		const animation = new Animation(name, frames, options, this);
+		this._animations.set(name, animation);
+		return animation;
+	}
 
-	// 	this.velocity.x = x;
-	// 	this.velocity.y = y;
-	// }
+	playAnimation(name) {
+		for (const [key, animation] of this._animations.entries()) {
+			if (key === name) animation.play();
+			else animation.pause();
+		}
+	}
+
+	pauseAnimation(name) {
+		const animation = this._animations.get(name);
+		animation.pause();
+	}
 }
