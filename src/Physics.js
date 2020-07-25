@@ -10,15 +10,33 @@ export default class Physics {
 	}
 
 	colliding(sprite1, sprite2) {
-		const ab = sprite1.getBounds();
-		const bb = sprite2.getBounds();
-		const colliding =
-			ab.x + ab.width > bb.x &&
-			ab.x < bb.x + bb.width &&
-			ab.y + ab.height > bb.y &&
-			ab.y < bb.y + bb.height;
+		if (sprite1.isGroup && sprite2.isGroup) {
+			for (const sprite1s of sprite1.sprites) {
+				for (const sprite2s of sprite2.sprites) {
+					const ab = sprite1s.getBounds();
+					const bb = sprite2s.getBounds();
+					const colliding =
+						ab.x + ab.width > bb.x &&
+						ab.x < bb.x + bb.width &&
+						ab.y + ab.height > bb.y &&
+						ab.y < bb.y + bb.height;
 
-		return colliding;
+					if (colliding) return colliding;
+				}
+			}
+		} else {
+			const ab = sprite1.getBounds();
+			const bb = sprite2.getBounds();
+			const colliding =
+				ab.x + ab.width > bb.x &&
+				ab.x < bb.x + bb.width &&
+				ab.y + ab.height > bb.y &&
+				ab.y < bb.y + bb.height;
+
+			return colliding;
+		}
+
+		return false;
 	}
 
 	transferVelocity(sprite1, sprite2) {

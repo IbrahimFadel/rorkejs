@@ -11,3 +11,5 @@ export function rgbToHex({ r, g, b }) {
 
 	return `0x${newR}${newG}${newB}`;
 }
+
+export const toRad = angle => (angle * Math.PI) / 180;

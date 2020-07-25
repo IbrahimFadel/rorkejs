@@ -2,6 +2,7 @@
 
 import { Sprite as PixiSprite } from 'pixi.js';
 import Animation from './Animation';
+import { toRad } from './Helpers';
 
 export const SPRITE_TYPES = {
 	SPRITE: 0,
@@ -60,5 +61,13 @@ export default class Sprite extends PixiSprite {
 	pauseAnimation(name) {
 		const animation = this._animations.get(name);
 		animation.pause();
+	}
+
+	moveForward(speed) {
+		const x = Math.cos(toRad(this.angle));
+		const y = Math.sin(toRad(this.angle));
+
+		this.velocity.x = x * speed;
+		this.velocity.y = y * speed;
 	}
 }

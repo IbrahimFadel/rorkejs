@@ -6,6 +6,7 @@ import Loader from './Loader';
 import Sprite, { SPRITE_TYPES } from './Sprite';
 import Physics from './Physics';
 import Input from './Input';
+import Group from './Group';
 
 export default class Rorke extends Application {
 	constructor(width, height, colour) {
@@ -24,6 +25,7 @@ export default class Rorke extends Application {
 		this.textures = new Map();
 		this.spritesheets = new Map();
 		this.sprites = [];
+		this.groups = [];
 
 		this.load = {
 			texture: (name, path) => {
@@ -36,6 +38,7 @@ export default class Rorke extends Application {
 
 		this.add = {
 			sprite: (x, y, textureName) => this.addSprite(x, y, textureName),
+			group: () => this.addGroup(),
 		};
 	}
 
@@ -83,6 +86,7 @@ export default class Rorke extends Application {
 	runUpdate() {
 		this.ticker.add(() => {
 			this.updateSprites();
+			this.updateGroups();
 
 			update();
 		});
@@ -97,6 +101,14 @@ export default class Rorke extends Application {
 						animation.update();
 					}
 				}
+			}
+		}
+	}
+
+	updateGroups() {
+		for (const group of this.groups) {
+			for (const sprite of group.sprites) {
+				sprite.update();
 			}
 		}
 	}
@@ -140,6 +152,12 @@ export default class Rorke extends Application {
 		this.sprites.push(newSprite);
 
 		return newSprite;
+	}
+
+	addGroup() {
+		const group = new Group(this);
+		this.groups.push(group);
+		return group;
 	}
 }
 
