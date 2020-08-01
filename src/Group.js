@@ -25,11 +25,14 @@ export default class Group extends Container {
 			);
 		}
 
+		newSprite.groupChild = true;
+		newSprite.group = this;
+
 		return newSprite;
 	}
 
 	addSpriteWithTexture(x, y, texture) {
-		const newSprite = new Sprite(x, y, texture);
+		const newSprite = new Sprite(x, y, texture, this.rorke);
 		newSprite.type = SPRITE_TYPES.SPRITE;
 		this.rorke.stage.addChild(newSprite);
 		this.sprites.push(newSprite);
@@ -40,7 +43,7 @@ export default class Group extends Container {
 	addSpriteWithSpritesheet(x, y, spritesheet) {
 		const initialTexture = spritesheet.textures[0];
 
-		const newSprite = new Sprite(x, y, initialTexture);
+		const newSprite = new Sprite(x, y, initialTexture, this.rorke);
 		newSprite.type = SPRITE_TYPES.SPRITESHEET;
 		newSprite.textures = spritesheet.textures;
 

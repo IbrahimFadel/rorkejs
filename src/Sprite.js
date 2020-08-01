@@ -10,8 +10,9 @@ export const SPRITE_TYPES = {
 };
 
 export default class Sprite extends PixiSprite {
-	constructor(x, y, texture) {
+	constructor(x, y, texture, rorke) {
 		super(texture);
+		this.rorke = rorke;
 		this.x = x;
 		this.y = y;
 		this.anchor.set(0.5);
@@ -19,6 +20,8 @@ export default class Sprite extends PixiSprite {
 		this.textures = [];
 		this._animations = new Map();
 		this.type = undefined;
+		this.groupChild = false;
+		this.group = undefined;
 
 		this.mass = 100;
 		this.velocity = {
@@ -29,7 +32,7 @@ export default class Sprite extends PixiSprite {
 
 		this.animations = {
 			add: (name, frames, options) => this.addAnimation(name, frames, options),
-			play: name => this.playAnimation(name),
+			play: (name, cb) => this.playAnimation(name, cb),
 			pause: name => this.pauseAnimation(name),
 		};
 	}
@@ -51,9 +54,9 @@ export default class Sprite extends PixiSprite {
 		return animation;
 	}
 
-	playAnimation(name) {
+	playAnimation(name, cb) {
 		for (const [key, animation] of this._animations.entries()) {
-			if (key === name) animation.play();
+			if (key === name) animation.play(cb);
 			else animation.pause();
 		}
 	}
@@ -69,5 +72,20 @@ export default class Sprite extends PixiSprite {
 
 		this.velocity.x = x * speed;
 		this.velocity.y = y * speed;
+	}
+
+	kill() {
+		const sprites = this.groupChild ? this.group.sprites : this.rorke.sprites;
+		const indexOfSprite = sprites.indexOf(this);
+		sprites.splice(indexOfSprite, 1);
+		this.parent.removeChild(this);
+	}
+
+	hide() {
+		this.visible = false;
+	}
+
+	show() {
+		this.visible = true;
 	}
 }

@@ -133,7 +133,7 @@ export default class Rorke extends Application {
 	}
 
 	addSpriteWithTexture(x, y, texture) {
-		const newSprite = new Sprite(x, y, texture);
+		const newSprite = new Sprite(x, y, texture, this);
 		newSprite.type = SPRITE_TYPES.SPRITE;
 		this.stage.addChild(newSprite);
 		this.sprites.push(newSprite);
@@ -144,7 +144,7 @@ export default class Rorke extends Application {
 	addSpriteWithSpritesheet(x, y, spritesheet) {
 		const initialTexture = spritesheet.textures[0];
 
-		const newSprite = new Sprite(x, y, initialTexture);
+		const newSprite = new Sprite(x, y, initialTexture, this);
 		newSprite.type = SPRITE_TYPES.SPRITESHEET;
 		newSprite.textures = spritesheet.textures;
 

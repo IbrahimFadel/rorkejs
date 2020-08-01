@@ -7,6 +7,11 @@ function load() {
 	game.load.texture('player', 'assets/ship.png');
 	game.load.texture('bullet', 'assets/lazer.png');
 	game.load.texture('enemy', 'assets/enemy.png');
+	game.load.spritesheet('explosion', 'assets/explode.png', {
+		tileW: 128,
+		tileH: 128,
+		numTiles: 16,
+	});
 	// game.load.spritesheet('walking', 'assets/walkingSpritesheet.png', {
 	// 	tileW: 64,
 	// 	tileH: 64,
@@ -24,6 +29,7 @@ const fireRate = 5;
 let fireRateInterval = 5;
 
 let enemies;
+let explosion;
 
 function create() {
 	player = game.add.sprite(
@@ -32,27 +38,45 @@ function create() {
 		'player',
 	);
 
+	explosion = game.add.sprite(0, 0, 'explosion');
+	explosion.hide();
+	explosion.animations.add(
+		'explode',
+		[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+		{
+			speed: 3,
+		},
+	);
+
 	bullets = game.add.group();
-
 	enemies = game.add.group();
-
 	enemies.create(game.screen.width - 100, game.screen.height / 2, 'enemy');
-
-	// bullets.create(10, 10, 'bullet');
+	enemies.create(100, game.screen.height / 2, 'enemy');
+	enemies.create(game.screen.width / 2, game.screen.height - 100, 'enemy');
+	enemies.create(game.screen.width / 2, 100, 'enemy');
 }
 
 function update() {
 	handlePlayerMovement();
-	// game.physics.collide(bullets, player2);
 
-	if (game.physics.colliding(bullets, enemies)) {
-		// enemies.destroy();
-		// console.log('Colliding');
+	for (const bullet of bullets.sprites) {
+		for (const enemy of enemies.sprites) {
+			if (game.physics.colliding(bullet, enemy)) {
+				explosion.show();
+				explosion.x = enemy.x;
+				explosion.y = enemy.y;
+				explosion.animations.play('explode', () => {
+					explosion.hide();
+				});
+				enemy.kill();
+				bullet.kill();
+			}
+		}
 	}
 }
 
 function handlePlayerMovement() {
-	if (game.input.keyIsDown('w')) {
+	if (game.input.keyIsDown('w') || game.input.keyIsDown('up')) {
 		if (playerSpeed < maxPlayerSpeed) playerSpeed += 5;
 		player.moveForward(playerSpeed);
 	} else {
