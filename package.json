@@ -6,7 +6,7 @@
 	"scripts": {
 		"build": "webpack",
 		"dev": "webpack --watch --progress",
-		"lint": "eslint src --fix",
+		"lint": "eslint src",
 		"doc": "jsdoc src/ --destination docs --configure ./jsdoc.config.json"
 	},
 	"keywords": [],

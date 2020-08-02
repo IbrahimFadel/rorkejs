@@ -2,7 +2,7 @@
 
 import { Sprite as PixiSprite } from 'pixi.js';
 import Animation from './Animation';
-import { toRad } from './helpers';
+import { toRad, toDegree } from './helpers';
 
 /**
  * Enum of sprite types
@@ -12,6 +12,7 @@ import { toRad } from './helpers';
 export const SPRITE_TYPES = {
 	SPRITE: 0,
 	SPRITESHEET: 1,
+	BACKGROUND: 2
 };
 
 /**
@@ -50,18 +51,18 @@ export default class Sprite extends PixiSprite {
 	/**
 	 * Update the sprite
 	 */
-	update() {
+	update(dt) {
 		if (!this.immovable) {
-			this.updatePosition();
+			this.updatePosition(dt);
 		}
 	}
 
 	/**
 	 * Updte sprite position based on velocity
 	 */
-	updatePosition() {
-		this.x += this.velocity.x / 50;
-		this.y += this.velocity.y / 50;
+	updatePosition(dt) {
+		this.x += (this.velocity.x / 50) * dt;
+		this.y += (this.velocity.y / 50) * dt;
 	}
 
 	/**
@@ -97,9 +98,10 @@ export default class Sprite extends PixiSprite {
 	moveForward(speed) {
 		const x = Math.cos(toRad(this.angle));
 		const y = Math.sin(toRad(this.angle));
+		const normalized = Math.sqrt(x**2 + y**2);
 
-		this.velocity.x = x * speed;
-		this.velocity.y = y * speed;
+		this.velocity.x = (x / normalized) * speed;
+		this.velocity.y = (y / normalized) * speed;
 	}
 
 	/**
@@ -108,8 +110,11 @@ export default class Sprite extends PixiSprite {
 	kill() {
 		const sprites = this.groupChild ? this.group.sprites : this.rorke.sprites;
 		const indexOfSprite = sprites.indexOf(this);
-		sprites.splice(indexOfSprite, 1);
-		this.parent.removeChild(this);
+		if(indexOfSprite !== -1) {
+			sprites.splice(indexOfSprite, 1);
+			//eslint-disable-next-line unicorn/prefer-node-remove
+			this.parent.removeChild(this);
+		}
 	}
 
 	/**
@@ -124,5 +129,10 @@ export default class Sprite extends PixiSprite {
 	 */
 	show() {
 		this.visible = true;
+	}
+
+	lookAt(target) {
+		const angle = toDegree(Math.atan2(target.y - this.y, target.x - this.x));
+		this.angle = angle;
 	}
 }

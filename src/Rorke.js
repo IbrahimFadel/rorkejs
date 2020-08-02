@@ -118,9 +118,9 @@ export default class Rorke extends Application {
 	 * Start the game loop
 	 */
 	runUpdate() {
-		this.ticker.add(() => {
-			this.updateSprites();
-			this.updateGroups();
+		this.ticker.add(dt => {
+			this.updateSprites(dt);
+			this.updateGroups(dt);
 
 			this.functions.update();
 		});
@@ -129,9 +129,9 @@ export default class Rorke extends Application {
 	/**
 	 * Update the position, angle, etc. of each sprite
 	 */
-	updateSprites() {
+	updateSprites(dt) {
 		for (const sprite of this.sprites) {
-			sprite.update();
+			sprite.update(dt);
 			if (sprite.type === SPRITE_TYPES.SPRITESHEET) {
 				// eslint-disable-next-line no-unused-vars
 				for (const [name, animation] of sprite._animations.entries()) {
@@ -146,10 +146,10 @@ export default class Rorke extends Application {
 	/**
 	 * Update each sprite within each group
 	 */
-	updateGroups() {
+	updateGroups(dt) {
 		for (const group of this.groups) {
 			for (const sprite of group.sprites) {
-				sprite.update();
+				sprite.update(dt);
 				if (sprite.type === SPRITE_TYPES.SPRITESHEET) {
 					// eslint-disable-next-line no-unused-vars
 					for (const [name, animation] of sprite._animations.entries()) {
@@ -228,6 +228,20 @@ export default class Rorke extends Application {
 		const group = new Group(this);
 		this.groups.push(group);
 		return group;
+	}
+
+	setBackground(textureName) {
+		const background = new Sprite(0, 0, this.textures.get(textureName));
+		background.anchor.set(0);
+		background.type = SPRITE_TYPES.BACKGROUND;
+		this.stage.addChild(background);
+		this.sprites.unshift(background);
+
+		return background;
+	}
+
+	dist(sprite1, sprite2) {
+		return Math.sqrt((sprite1.x - sprite2.x)**2 + (sprite1.y - sprite2.y)**2);
 	}
 }
 

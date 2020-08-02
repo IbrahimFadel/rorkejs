@@ -13,3 +13,4 @@ export function rgbToHex({ r, g, b }) {
 }
 
 export const toRad = angle => (angle * Math.PI) / 180;
+export const toDegree = rad => (rad * 180) / Math.PI;
