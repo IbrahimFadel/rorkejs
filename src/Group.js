@@ -1,5 +1,5 @@
 import { Container } from 'pixi.js';
-import Sprite, { SPRITE_TYPES } from './Sprite';
+import Sprite, { SPRITE_TYPES } from './sprite';
 
 export default class Group extends Container {
 	constructor(rorke) {
@@ -29,6 +29,10 @@ export default class Group extends Container {
 		newSprite.group = this;
 
 		return newSprite;
+	}
+
+	remove(sprite) {
+		sprite.kill();
 	}
 
 	addSpriteWithTexture(x, y, texture) {

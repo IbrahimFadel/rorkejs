@@ -19,27 +19,27 @@ export default class Input {
 
 	onKeyPressed(key, fn) {
 		let repeat = false;
-		window.addEventListener('keyup', function () {
+		window.addEventListener('keyup', () => {
 			repeat = false;
 		});
-		window.addEventListener('keydown', function (e) {
-			let newKeyName = undefined;
-			if (e.key === 'ArrowLeft') {
+		window.addEventListener('keydown', event => {
+			let newKeyName;
+			if (event.key === 'ArrowLeft') {
 				newKeyName = 'left';
-			} else if (e.key === 'ArrowRight') {
+			} else if (event.key === 'ArrowRight') {
 				newKeyName = 'right';
-			} else if (e.key === 'ArrowUp') {
+			} else if (event.key === 'ArrowUp') {
 				newKeyName = 'up';
-			} else if (e.key === 'ArrowDown') {
+			} else if (event.key === 'ArrowDown') {
 				newKeyName = 'down';
 			} else {
-				newKeyName = e.key;
+				newKeyName = event.key;
 			}
 			if (!repeat && newKeyName === key) {
 				repeat = true;
 				const callbackObject = {
 					key: key,
-					code: e.keyCode,
+					code: event.key,
 				};
 				fn(callbackObject);
 			}
@@ -47,47 +47,47 @@ export default class Input {
 	}
 
 	keyIsDown(key) {
-		window.addEventListener('keydown', e => {
-			this.keyDownHelper(e, key);
+		window.addEventListener('keydown', event => {
+			this.keyDownHelper(event, key);
 		});
-		window.addEventListener('keyup', e => {
-			this.keyUpHelper(e, key);
+		window.addEventListener('keyup', event => {
+			this.keyUpHelper(event, key);
 		});
 		return this.keyArray[this.keyEnum[key]];
 	}
 
-	keyDownHelper(e, key) {
-		let newKeyName = undefined;
-		if (e.key === 'ArrowLeft') {
+	keyDownHelper(event, key) {
+		let newKeyName;
+		if (event.key === 'ArrowLeft') {
 			newKeyName = 'left';
-		} else if (e.key === 'ArrowRight') {
+		} else if (event.key === 'ArrowRight') {
 			newKeyName = 'right';
-		} else if (e.key === 'ArrowUp') {
+		} else if (event.key === 'ArrowUp') {
 			newKeyName = 'up';
-		} else if (e.key === 'ArrowDown') {
+		} else if (event.key === 'ArrowDown') {
 			newKeyName = 'down';
-		} else if (e.key === ' ') {
+		} else if (event.key === ' ') {
 			newKeyName = 'space';
 		} else {
-			newKeyName = e.key;
+			newKeyName = event.key;
 		}
 		if (newKeyName === key) this.keyArray[this.keyEnum[key]] = true;
 	}
 
-	keyUpHelper(e, key) {
-		let newKeyName = undefined;
-		if (e.key === 'ArrowLeft') {
+	keyUpHelper(event, key) {
+		let newKeyName;
+		if (event.key === 'ArrowLeft') {
 			newKeyName = 'left';
-		} else if (e.key === 'ArrowRight') {
+		} else if (event.key === 'ArrowRight') {
 			newKeyName = 'right';
-		} else if (e.key === 'ArrowUp') {
+		} else if (event.key === 'ArrowUp') {
 			newKeyName = 'up';
-		} else if (e.key === 'ArrowDown') {
+		} else if (event.key === 'ArrowDown') {
 			newKeyName = 'down';
-		} else if (e.key === ' ') {
+		} else if (event.key === ' ') {
 			newKeyName = 'space';
 		} else {
-			newKeyName = e.key;
+			newKeyName = event.key;
 		}
 		if (newKeyName === key) this.keyArray[this.keyEnum[key]] = false;
 	}

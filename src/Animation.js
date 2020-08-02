@@ -1,19 +1,20 @@
 export default class Animation {
-	constructor(name, frames, options = { speed: 5, repeat: false }, sprite) {
+	constructor(name, frames, options = false, sprite) {
 		this.name = name;
 		this.frames = frames;
-		this.options = options;
+		this.options = options ? options : { speed: 5, repeat: false };
 		this.sprite = sprite;
 		this.paused = true;
 		this.currentFrame = 0;
 		this.interval = 0;
-		this.cb = undefined;
-		this.doneCb = false;
+		this.callback = undefined;
+		this.doneCallback = false;
 	}
 
-	play(cb) {
+	play(callback) {
+		this.doneCallback = false;
 		this.paused = false;
-		this.cb = cb;
+		this.callback = callback;
 	}
 
 	pause() {
@@ -25,27 +26,26 @@ export default class Animation {
 	}
 
 	doneAnimation() {
-		if (this.cb && !this.doneCb) {
-			this.cb();
-			// this.pause();
+		if (this.callback && !this.doneCallback) {
+			this.callback();
+			this.doneCallback = true;
+			this.paused = true;
 		}
 	}
 
 	update() {
-		this.interval++;
+		if (this.paused) return;
 		if (this.interval === this.options.speed) {
 			this.interval = 0;
 			if (this.options.repeat) {
 				if (this.currentFrame === this.frames.length) {
 					this.currentFrame = 0;
 					this.doneAnimation();
-					this.doneCb = true;
 				}
 			} else {
 				if (this.currentFrame === this.frames.length) {
+					this.currentFrame = 0;
 					this.doneAnimation();
-					this.doneCb = true;
-					// this.currentFrame = 0;
 					return;
 				}
 			}
@@ -53,5 +53,6 @@ export default class Animation {
 			this.setFrame(this.currentFrame);
 			this.currentFrame++;
 		}
+		this.interval++;
 	}
 }

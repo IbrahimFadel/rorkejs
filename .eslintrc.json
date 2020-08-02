@@ -3,7 +3,11 @@
 		"browser": true,
 		"es6": true
 	},
-	"extends": ["eslint:recommended", "google"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:sonarjs/recommended",
+		"plugin:unicorn/recommended"
+	],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
@@ -12,9 +16,16 @@
 		"ecmaVersion": 2018,
 		"sourceType": "module"
 	},
+	"plugins": ["sonarjs"],
 	"rules": {
 		"no-var": 2,
 		"indent": [2, "tab"],
-		"no-tabs": 0
+		"no-tabs": 0,
+		"arrow-parens": "off",
+		"arrow-spacing": "error",
+		"prefer-arrow-callback": "error",
+		"camelcase": "error",
+		"object-curly-spacing": ["error", "always"],
+		"unicorn/filename-case": "off"
 	}
 }
